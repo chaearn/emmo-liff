@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig = {
   images: {
+    domains: ['profile.line-scdn.net'], // ✅ เพิ่ม domain ของ LINE
     remotePatterns: [
       {
         protocol: 'https',
