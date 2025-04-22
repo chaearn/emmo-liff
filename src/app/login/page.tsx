@@ -138,6 +138,7 @@ export default function UpdateLatestUserWithLINE() {
     <div>
       <h1>Welcome, {profile.displayName}</h1>
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
+      <p>{profile.userId}</p>
       <form onSubmit={handleUpdate}>
         <input
           type="text"
