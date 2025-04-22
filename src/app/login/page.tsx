@@ -6,7 +6,7 @@ import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
   const [profile, setProfile] = useState<LineProfile | null>(null);
-  const [latestUserId] = useState<number | null>(null);
+  const [latestUserId, setLatestUserId] = useState<number | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [avatar] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +42,20 @@ export default function UpdateLatestUserWithLINE() {
   
         const rawProfile = await liff.getProfile();
         alert(`👤 Profile: ${rawProfile.displayName}`);
+
+        // Fetch latest user from Supabase
+        const { data: latest, error } = await supabase
+          .from('users')
+          .select('id')
+          .order('id', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (latest) {
+          setLatestUserId(latest.id);
+        } else if (error) {
+          alert(`❌ Failed to fetch latest user: ${error.message}`);
+        }
   
         // ...rest of the logic...
       } catch (err) {
@@ -83,6 +97,7 @@ export default function UpdateLatestUserWithLINE() {
   };
 
   if (!profile) return <p>Loading LINE profile...</p>;
+  console.log('🎉 Profile loaded', profile)
 
   return (
     <div>
