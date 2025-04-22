@@ -52,11 +52,15 @@ export default function UpdateLatestUserWithLINE() {
         const rawProfile = await liff.getProfile();
         alert(`👤 Profile: ${rawProfile.displayName}`);
 
+        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const tempIdFromHash = hashParams.get('temp');
         const savedTempId = localStorage.getItem('pendingTempId');
-      if (!savedTempId) {
-        alert('❌ Missing temp ID');
-        return;
-      }
+        const effectiveTempId = savedTempId || tempIdFromHash;
+
+        if (!effectiveTempId) {
+            alert('❌ Missing temp ID');
+            return;
+        }
 
         const parsedProfile: LineProfile = {
             userId: rawProfile.userId,
@@ -71,7 +75,7 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', parseInt(savedTempId, 10)); // 💥 ใช้ id จาก URL query param
+            .eq('id', effectiveTempId); // 💥 ใช้ id จาก URL query param
 
         if (updateError) {
             alert(`❌ Failed to update user: ${updateError.message}`);
