@@ -19,79 +19,39 @@ export default function UpdateLatestUserWithLINE() {
   };
 
   useEffect(() => {
-    const init = async () => {
+    const start = async () => {
       try {
-        alert("🟡 Initializing LIFF...");
-        alert("🧪 LIFF ID: " + process.env.NEXT_PUBLIC_LIFF_ID);
-        alert("🧪 Preparing to init LIFF...");
-        alert("📦 LIFF SDK loaded = " + typeof liff.init);
-        alert("🧪 LIFF ID: " + process.env.NEXT_PUBLIC_LIFF_ID);
+        alert("🟡 Starting LIFF init...");
+  
         await liff.init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
         });
         alert("✅ LIFF initialized");
-
-        const token = liff.getAccessToken();
-        alert(`🧪 Checking LIFF access token... token = ${token}`);
-
-        if (!token) {
-          alert("🔁 No token, redirecting to LIFF login...");
+  
+        if (!liff.isLoggedIn()) {
+          alert("🔁 Not logged in, redirecting...");
           liff.login({ redirectUri: window.location.href });
           return;
         }
-
-        alert("✅ LIFF token found, fetching profile...");
-
+  
+        const token = liff.getAccessToken();
+        alert(`🔐 Token: ${token}`);
+  
         const rawProfile = await liff.getProfile();
-        alert(`👤 LINE Profile: ${rawProfile.displayName}`);
-
-        const userProfile: LineProfile = {
-          userId: rawProfile.userId,
-          displayName: rawProfile.displayName,
-          pictureUrl: rawProfile.pictureUrl ?? '',
-        };
-        setProfile(userProfile);
-        setDisplayName(userProfile.displayName);
-        setAvatar(userProfile.pictureUrl ?? '');
-
-        const { data: sessionData } = await supabase.auth.getSession();
-        alert(`🔐 Supabase Session: ${sessionData.session ? "Yes" : "No"}`);
-
-        if (!sessionData.session) {
-          const { error: anonLoginError } = await supabase.auth.signInAnonymously();
-          if (anonLoginError) {
-            alert(`❌ Failed anon login: ${anonLoginError.message}`);
-            return;
-          }
-          alert("✅ Anonymous login successful");
-        }
-
-        const { data, error: fetchError } = await supabase
-          .from('users')
-          .select('id')
-          .order('id', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (fetchError) {
-          alert(`❌ Fetch latest user error: ${fetchError.message}`);
-          setError(fetchError.message);
-        } else if (data) {
-          alert(`✅ Latest user ID: ${data.id}`);
-          setLatestUserId(data.id);
-        }
-      } catch (err: unknown) {
+        alert(`👤 Profile: ${rawProfile.displayName}`);
+  
+        // ...rest of the logic...
+      } catch (err) {
         if (err instanceof Error) {
-          alert(`❌ LIFF init error: ${err.message}`);
+          alert(`❌ Unexpected error: ${err.message}`);
         } else {
-          alert('❌ LIFF init error: Unknown error');
+          alert('❌ Unknown error');
         }
-        console.error('❌ init error:', err);
       }
     };
-
-    init();
+  
+    start();
   }, []);
 
   const handleUpdate = async (e: React.FormEvent) => {
