@@ -16,6 +16,10 @@ const AddUser: React.FC = () => {
 
     const { data, error } = await supabase.from('users').insert([{ name }]);
 
+    if (data) {
+        console.log('Inserted row:', data);
+      }
+      
     if (error) {
       setError(error.message);
     } else {
