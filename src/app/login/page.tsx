@@ -34,12 +34,6 @@ export default function LoginPage() {
           pictureUrl: rawProfile.pictureUrl ?? '',
         };
         setProfile(userProfile);
-        
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          const { error: anonError } = await supabase.auth.signInAnonymously();
-          if (anonError) console.error('❌ Anonymous sign-in failed', anonError);
-        }
 
         // ✅ Check if Supabase already has session
         const { data: sessionData } = await supabase.auth.getSession();
