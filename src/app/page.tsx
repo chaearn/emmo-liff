@@ -1,54 +1,50 @@
-'use client';
+'use client'
 import { useState } from 'react';
-import { supabase } from '@utils/supabase/client';
 import { useRouter } from 'next/navigation';
-import { v4 as uuidv4 } from 'uuid'; // อย่าลืมติดตั้งผ่าน npm install uuid
+import { supabase } from '@utils/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddUser: React.FC = () => {
-  const [name, setName] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-  
+  const handleAddUser = async () => {
+    setError('');
+    setSuccess('');
+
     const tempId = uuidv4();
-    console.log('Inserting user with display_name:', tempId);
-  
+
     const { error: insertError } = await supabase.from('users').insert([
       {
         name,
-        display_name: tempId,
+        display_name: tempId, // ใช้ tempId ชั่วคราวไว้ตามหา row
       },
     ]);
-  
+
     if (insertError) {
-      setError(`Failed to add user: ${insertError.message}`);
+      setError(`❌ เกิดข้อผิดพลาด: ${insertError.message}`);
       return;
     }
-  
-    // Directly query after insert
-    const { data: matchingUser, error: selectError } = await supabase
+
+    // 🔍 หา row ที่เพิ่งสร้างจาก display_name = tempId
+    const { data: match, error: selectError } = await supabase
       .from('users')
       .select('id')
       .eq('display_name', tempId)
       .order('id', { ascending: false })
       .limit(1);
-  
-    console.log('Matching user result:', { matchingUser, selectError });
-  
-    if (selectError || !matchingUser || matchingUser.length === 0) {
-      setError('❌ Unable to retrieve the inserted row');
+
+    if (selectError || !match || match.length === 0) {
+      setError('❌ ไม่สามารถค้นหา row ที่เพิ่งเพิ่มได้');
       return;
     }
-  
-    const rowId = matchingUser[0].id;
-    setSuccess('User added successfully!');
-    setName(''); // Reset the input field
-    router.push(`/login?temp=${rowId}`);
+
+    setRowId(match[0].id);
+    setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
+    setName('');
   };
 
   return (
@@ -62,7 +58,7 @@ const AddUser: React.FC = () => {
             <form onSubmit={handleAddUser}>
                 <input
                 type="text"
-                placeholder="แนะนำตัวหน่อย"
+                placeholder="ใส่ชื่อเล่นของเธอ..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -76,18 +72,27 @@ const AddUser: React.FC = () => {
                     textAlign: 'center'
                 }}
                 />
-                <button type="submit"
-                style={{
-                    padding: '0.75rem',
-                    width: '100%',
-                    fontSize: '1rem',
-                    borderRadius: 8,
-                    backgroundColor: '#111827',
-                    color: '#fff',
-                    }}>Next</button>
+                <button
+                  onClick={handleAddUser}
+                  className="bg-black text-white px-6 py-2 rounded"
+                >
+                  💾 บันทึกชื่อ
+                </button>
+
+                
             </form>
             {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
-            {success && <p style={{ color: 'green', textAlign: 'center', marginTop: '1rem' }}>{success}</p>}
+            {success && (
+                  <>
+                    <p className="text-green-600">{success}</p>
+                    <button
+                      onClick={() => router.push(`/login?temp=${rowId}`)}
+                      className="mt-4 bg-blue-600 text-white px-6 py-2 rounded"
+                    >
+                      ➡️ ไปต่อเลย
+                    </button>
+                  </>
+                )}
         </div>
         </main>
         </div>
