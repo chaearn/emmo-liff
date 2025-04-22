@@ -75,8 +75,12 @@ export default function UpdateLatestUserWithLINE() {
           alert(`✅ Latest user ID: ${data.id}`);
           setLatestUserId(data.id);
         }
-      } catch (err: any) {
-        alert(`❌ LIFF init error: ${err.message}`);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          alert(`❌ LIFF init error: ${err.message}`);
+        } else {
+          alert('❌ LIFF init error: Unknown error');
+        }
         console.error('❌ init error:', err);
       }
     };
