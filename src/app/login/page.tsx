@@ -78,7 +78,8 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', effectiveTempId as string); // 💥 ใช้ id จาก URL query param
+            .eq('id', effectiveTempId as string)
+            .select(); // ⬅️ เพิ่มอันนี้เพื่อให้มันส่งข้อมูลกลับมา // 💥 ใช้ id จาก URL query param
 
         if (updateError) {
             console.error('❌ Failed to update user:', updateError.message);
