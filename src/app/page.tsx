@@ -8,42 +8,46 @@ const AddUser: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter()
+  const router = useRouter();
+
   const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-  
-    const tempId = uuidv4(); // ✅ ใช้ uuid เป็นตัวจำค่าเฉพาะครั้งนี้
-  
-    // ✅ Insert ด้วย name เป็นชื่อเล่นจริง + tempId ซ่อนไว้ใน display_name ชั่วคราว
+
+    const tempId = uuidv4();
+
+    // ✅ Insert with tempId hidden in display_name
     const { error: insertError } = await supabase.from('users').insert([
       {
-        name, // ชื่อเล่นจริง
-        display_name: tempId, // 🫣 ใช้ชั่วคราวเพื่อ match ทีหลัง
-      },
+        name,                // ชื่อเล่นจริง
+        display_name: tempId // ใช้ tempId ชั่วคราว
+      }
     ]);
-  
+
     if (insertError) {
-      setError(insertError.message);
+      setError(`❌ Failed to add user: ${insertError.message}`);
       return;
     }
-    
-    await new Promise(r => setTimeout(r, 500));
-    // ✅ Query หาแถวที่เพิ่ง insert โดยใช้ tempId ใน display_name
+
+    // ✅ Select row just inserted using tempId
     const { data: matchingUser, error: selectError } = await supabase
       .from('users')
       .select('id')
       .eq('display_name', tempId)
       .order('id', { ascending: false })
       .limit(1);
-  
+
     if (selectError || !matchingUser || matchingUser.length === 0) {
-      setError('❌ ไม่สามารถดึง row ที่เพิ่ง insert ได้');
+      setError('❌ Unable to retrieve the inserted row');
       return;
     }
-  
+
     const rowId = matchingUser[0].id;
+    setSuccess('✅ User added successfully!');
+    setName(''); // Reset input field
+
+    // ✅ Redirect with tempId as URL param
     router.push(`/login?temp=${rowId}`);
   };
 
