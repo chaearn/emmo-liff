@@ -23,13 +23,14 @@ export default function UpdateLatestUserWithLINE() {
       try {
         await liff.init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
-          withLoginOnExternalBrowser: false,
+          withLoginOnExternalBrowser: true, // ✅ เปลี่ยนจาก false เป็น true
         });
 
         if (!liff.isLoggedIn()) {
-            liff.login({
-                redirectUri: window.location.href,
-              });
+          console.log('🔁 Not logged in. Redirecting to LIFF login...');
+          liff.login({
+            redirectUri: window.location.href,
+          });
           return;
         }
 
