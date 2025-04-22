@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 const AddUserPage: React.FC = () => {
   const [name, setName] = useState('');
   const [tempId, setTempId] = useState<string | null>(null); // save uuid only
-  const [rowId, setRowId] = useState<string | null>(null); // real row id
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
