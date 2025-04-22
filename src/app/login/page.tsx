@@ -29,7 +29,7 @@ export default function LoginPage() {
 
             const payload: UserProfile = {
                 line_id: userProfile.userId,
-                name: userProfile.displayName,
+                display_name: userProfile.displayName,
                 avatar: userProfile.pictureUrl
             };
 
