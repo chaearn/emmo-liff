@@ -6,7 +6,7 @@ import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
   const [profile, setProfile] = useState<LineProfile | null>(null);
-  const [latestUserId, setLatestUserId] = useState<number | null>(null);
+  const [latestUserId ] = useState<number | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [avatar] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +65,12 @@ export default function UpdateLatestUserWithLINE() {
                 avatar: parsedProfile.pictureUrl,
             })
             .eq('id', parseInt(tempId, 10)); // 💥 ใช้ id จาก URL query param
+
+        if (updateError) {
+            alert(`❌ Failed to update user: ${updateError.message}`);
+        } else {
+            alert('✅ LINE info updated!');
+        }
 
         setProfile(parsedProfile);
 
