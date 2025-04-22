@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig = {
   images: {
+    unoptimized: true,
     domains: ['profile.line-scdn.net'], // ✅ เพิ่ม domain ของ LINE
     remotePatterns: [
       {
