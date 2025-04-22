@@ -28,7 +28,8 @@ const AddUser: React.FC = () => {
       setError(insertError.message);
       return;
     }
-  
+    
+    await new Promise(r => setTimeout(r, 500));
     // ✅ Query หาแถวที่เพิ่ง insert โดยใช้ tempId ใน display_name
     const { data: matchingUser, error: selectError } = await supabase
       .from('users')
