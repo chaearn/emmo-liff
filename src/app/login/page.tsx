@@ -28,13 +28,9 @@ export default function UpdateLatestUserWithLINE() {
         });
         alert("✅ LIFF initialized");
 
-        if (!liff.isLoggedIn()) {
-          alert("🔁 Not logged in. Redirecting to LIFF login...");
-          liff.login({
-            redirectUri: window.location.href,
-          });
-          return;
-        }
+        alert("🧪 Checking if logged in...");
+        const loggedIn = liff.isLoggedIn();
+        alert(`🔍 isLoggedIn = ${loggedIn}`);
 
         alert("✅ Already logged in, fetching profile...");
         const token = liff.getAccessToken();
