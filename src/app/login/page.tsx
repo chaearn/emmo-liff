@@ -22,6 +22,10 @@ export default function UpdateLatestUserWithLINE() {
     const init = async () => {
       try {
         alert("🟡 Initializing LIFF...");
+        alert("🧪 LIFF ID: " + process.env.NEXT_PUBLIC_LIFF_ID);
+        alert("🧪 Preparing to init LIFF...");
+        alert("📦 LIFF SDK loaded = " + typeof liff.init);
+        alert("🧪 LIFF ID: " + process.env.NEXT_PUBLIC_LIFF_ID);
         await liff.init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
