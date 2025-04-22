@@ -44,15 +44,14 @@ export default function UpdateLatestUserWithLINE() {
         alert(`👤 Profile: ${rawProfile.displayName}`);
 
         // Fetch latest user from Supabase
-        const { data: latest, error } = await supabase
+        const { data, error } = await supabase
           .from('users')
           .select('id')
           .order('id', { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
 
-        if (latest) {
-          setLatestUserId(latest.id);
+        if (data && data.length > 0) {
+          setLatestUserId(data[0].id);
         } else if (error) {
           alert(`❌ Failed to fetch latest user: ${error.message}`);
         }
