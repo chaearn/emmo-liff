@@ -5,6 +5,11 @@ import { useEffect, useState } from 'react'
 import liff from '@line/liff'
 import { saveUserProfile } from '@/lib/supabase'
 
+const handleLogout = () => {
+    liff.logout();
+    window.location.reload(); // หรือ redirect ไปหน้า /login ก็ได้
+  };
+
 export default function LoginPage() {
     const platform = 'line';
   const [profile, setProfile] = useState<LineProfile | null>(null)
@@ -59,6 +64,9 @@ export default function LoginPage() {
         width={120}
         height={120}
         />
+        <button onClick={handleLogout}>
+            Logout
+        </button>
     </div>
   )
 }
