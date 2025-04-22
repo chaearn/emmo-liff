@@ -13,18 +13,19 @@ const AddUser: React.FC = () => {
     setError(null);
     setSuccess(null);
 
-    const { data, error } = await supabase.from('users').insert([{ name }]);
+    const { data, error } = await supabase.from('users').insert([{ name }]).select().single();
 
-    if (data) {
-        console.log('Inserted row:', data);
-      }
-      
     if (error) {
       setError(error.message);
     } else {
       setSuccess('User added successfully!');
       setName('');
-      
+
+      // ⏺ Save the inserted row id in localStorage
+      if (data && data.id) {
+        localStorage.setItem('pendingUserId', data.id.toString());
+      }
+
       router.push('/login');
     }
   };

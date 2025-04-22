@@ -50,18 +50,15 @@ export default function UpdateLatestUserWithLINE() {
           
           setProfile(parsedProfile);
 
-        // Fetch latest user from Supabase
-        const { data, error } = await supabase
-          .from('users')
-          .select('id')
-          .order('id', { ascending: false })
-          .limit(1);
+        // ⏺ Get userId from localStorage instead of fetching latest
+        const savedId = localStorage.getItem('pendingUserId');
 
-        if (data && data.length > 0) {
-          setLatestUserId(data[0].id);
-        } else if (error) {
-          alert(`❌ Failed to fetch latest user: ${error.message}`);
+        if (!savedId) {
+          alert("❌ No saved user id found");
+          return;
         }
+
+        setLatestUserId(parseInt(savedId, 10));
   
         // ...rest of the logic...
       } catch (err) {
