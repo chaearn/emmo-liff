@@ -37,6 +37,12 @@ export default function UpdateLatestUserWithLINE() {
         }
 
         alert("✅ Already logged in, fetching profile...");
+        const token = liff.getAccessToken();
+        if (!token) {
+          alert("🚨 No LIFF token after login. Forcing reload...");
+          window.location.reload();
+          return;
+        }
         const rawProfile = await liff.getProfile();
         alert(`👤 LINE Profile: ${rawProfile.displayName}`);
 
