@@ -14,7 +14,7 @@ export default function LoginPage() {
     const handleLogout = () => {
         liff.logout();
         setProfile(null); // ล้างข้อมูลจาก state    
-        window.location.replace('/login'); // หรือใช้ router.replace('/login') ก็ได้
+        window.location.replace('https://line.me');
     };
 
   useEffect(() => {
