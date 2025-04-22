@@ -14,40 +14,40 @@ const AddUser: React.FC = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
+  
     const tempId = uuidv4();
-
-    // ✅ Insert with tempId hidden in display_name
+    console.log('Inserting user with display_name:', tempId);
+  
     const { error: insertError } = await supabase.from('users').insert([
       {
-        name,                // ชื่อเล่นจริง
-        display_name: tempId // ใช้ tempId ชั่วคราว
-      }
+        name,
+        display_name: tempId,
+      },
     ]);
-
+  
     if (insertError) {
-      setError(`❌ Failed to add user: ${insertError.message}`);
+      setError(`Failed to add user: ${insertError.message}`);
       return;
     }
-
-    // ✅ Select row just inserted using tempId
+  
+    // Directly query after insert
     const { data: matchingUser, error: selectError } = await supabase
       .from('users')
       .select('id')
       .eq('display_name', tempId)
       .order('id', { ascending: false })
       .limit(1);
-
+  
+    console.log('Matching user result:', { matchingUser, selectError });
+  
     if (selectError || !matchingUser || matchingUser.length === 0) {
       setError('❌ Unable to retrieve the inserted row');
       return;
     }
-
+  
     const rowId = matchingUser[0].id;
-    setSuccess('✅ User added successfully!');
-    setName(''); // Reset input field
-
-    // ✅ Redirect with tempId as URL param
+    setSuccess('User added successfully!');
+    setName(''); // Reset the input field
     router.push(`/login?temp=${rowId}`);
   };
 
