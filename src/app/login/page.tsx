@@ -42,24 +42,32 @@ export default function UpdateLatestUserWithLINE() {
   
         const rawProfile = await liff.getProfile();
         alert(`👤 Profile: ${rawProfile.displayName}`);
+
+        const searchParams = new URLSearchParams(window.location.search);
+      const tempId = searchParams.get('temp');
+
+      if (!tempId) {
+        alert('❌ Missing temp ID');
+        return;
+      }
+
         const parsedProfile: LineProfile = {
             userId: rawProfile.userId,
             displayName: rawProfile.displayName,
             pictureUrl: rawProfile.pictureUrl || '', // fallback if undefined
           };
-          
-          setProfile(parsedProfile);
 
-        // ⏺ Get userId from localStorage instead of fetching latest
-        const savedId = localStorage.getItem('pendingUserId');
+        const { error: updateError } = await supabase
+            .from('users')
+            .update({
+                line_id: parsedProfile.userId,
+                display_name: parsedProfile.displayName,
+                avatar: parsedProfile.pictureUrl,
+            })
+            .eq('id', parseInt(tempId, 10)); // 💥 ใช้ id จาก URL query param
 
-        if (!savedId) {
-          alert("❌ No saved user id found");
-          return;
-        }
+        setProfile(parsedProfile);
 
-        setLatestUserId(parseInt(savedId, 10));
-  
         // ...rest of the logic...
       } catch (err) {
         if (err instanceof Error) {

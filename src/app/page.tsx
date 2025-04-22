@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { supabase } from '@utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid'; // อย่าลืมติดตั้งผ่าน npm install uuid
 
 const AddUser: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -12,30 +13,37 @@ const AddUser: React.FC = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
-    const { data, error } = await supabase.from('users').insert([{ name }]);
-
-    if (data) {
-        console.log('Inserted row:', data);
-      }
-      
-    if (error) {
-      setError(error.message);
-    } else {
-      setSuccess('User added successfully!');
-      setName('');
-      // ✅ จากนั้นใช้อีก query เพื่อ select id ล่าสุด (ต้องมี policy READ ด้วยนะ)
-      const { data: latest } = await supabase
+  
+    const tempId = uuidv4(); // ✅ ใช้ uuid เป็นตัวจำค่าเฉพาะครั้งนี้
+  
+    // ✅ Insert ด้วย name เป็นชื่อเล่นจริง + tempId ซ่อนไว้ใน display_name ชั่วคราว
+    const { error: insertError } = await supabase.from('users').insert([
+      {
+        name, // ชื่อเล่นจริง
+        display_name: tempId, // 🫣 ใช้ชั่วคราวเพื่อ match ทีหลัง
+      },
+    ]);
+  
+    if (insertError) {
+      setError(insertError.message);
+      return;
+    }
+  
+    // ✅ Query หาแถวที่เพิ่ง insert โดยใช้ tempId ใน display_name
+    const { data: matchingUser, error: selectError } = await supabase
       .from('users')
       .select('id')
+      .eq('display_name', tempId)
       .order('id', { ascending: false })
       .limit(1);
-
-      if (latest && latest.length > 0) {
-        localStorage.setItem('pendingUserId', latest[0].id.toString());
-      }
-      router.push('/login');
+  
+    if (selectError || !matchingUser || matchingUser.length === 0) {
+      setError('❌ ไม่สามารถดึง row ที่เพิ่ง insert ได้');
+      return;
     }
+  
+    const rowId = matchingUser[0].id;
+    router.push(`/login?temp=${rowId}`);
   };
 
   return (
