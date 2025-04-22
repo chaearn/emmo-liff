@@ -11,7 +11,33 @@ export default function Home() {
 
   const [name, setName] = useState<string>(''); // ✅ ระบุ type ชัดเจน
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
+  const handleNext = async () => {
+    if (!name.trim()) {
+      alert('กรุณากรอกชื่อที่อยากให้ Emmo เรียก');
+      return;
+    }
+
+    setLoading(true);
+
+    // const { data, error } = await supabase
+    //   .from('users')
+    //   .insert({ prefer_name: name })
+    //   .select()
+    //   .single();
+
+    setLoading(false);
+
+    // if (error) {
+    //   console.error('❌ Failed to insert name:', error.message);
+    //   alert('บันทึกชื่อไม่สำเร็จ ลองอีกครั้งนะ');
+    //   return;
+    // }
+
+    // ✅ Redirect ไปหน้า login พร้อมแนบ user id (optionally)
+    router.push('/login'); // หรือ `/login?id=${data.id}` ถ้าอยากใช้ต่อ
+  };
 
   return (
     
@@ -49,7 +75,8 @@ export default function Home() {
     />
 
     <button
-      
+      onClick={handleNext}
+      disabled={loading}
       style={{
         padding: '0.75rem',
         width: '100%',
