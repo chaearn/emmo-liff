@@ -21,31 +21,34 @@ export default function LoginPage() {
     const init = async () => {
       try {
         if (platform === 'line') {
-          await liff.init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
+            await liff.init({ 
+                liffId: process.env.NEXT_PUBLIC_LIFF_ID! 
+                withLoginOnExternalBrowser: false, // 👈 ปิด auto login
+            })
 
-          if (!liff.isLoggedIn()) {
-            liff.login()
-          } else {
-            const rawProfile = await liff.getProfile();
+            if (!liff.isLoggedIn()) {
+                liff.login()
+            } else {
+                const rawProfile = await liff.getProfile();
 
-            const userProfile: LineProfile = {
-            userId: rawProfile.userId,
-            displayName: rawProfile.displayName,
-            pictureUrl: rawProfile.pictureUrl ?? '', // ✅ fallback ถ้า undefined
-            };
-            setProfile(userProfile);
+                const userProfile: LineProfile = {
+                userId: rawProfile.userId,
+                displayName: rawProfile.displayName,
+                pictureUrl: rawProfile.pictureUrl ?? '', // ✅ fallback ถ้า undefined
+                };
+                setProfile(userProfile);
 
-            const payload: UserProfile = {
-                line_id: userProfile.userId,
-                display_name: userProfile.displayName,
-                avatar: userProfile.pictureUrl
-            };
+                const payload: UserProfile = {
+                    line_id: userProfile.userId,
+                    display_name: userProfile.displayName,
+                    avatar: userProfile.pictureUrl
+                };
 
-            const result = await saveUserProfile(payload);
-            const error = result?.error;
+                const result = await saveUserProfile(payload);
+                const error = result?.error;
 
-            if (error) console.error('Supabase error:', error)
-          }
+                if (error) console.error('Supabase error:', error)
+            }
         }
         // TODO: Add more platform auth (e.g., Facebook) here
       } catch (err) {
