@@ -93,6 +93,8 @@ export default function UpdateLatestUserWithLINE() {
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
         console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
+        const lineUserId = localStorage.getItem('lineUserId');
+        console.log('🧾 Called for LINE ID:', lineUserId);
         
         // ...rest of the logic...
       } catch (err) {
