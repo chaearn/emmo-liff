@@ -54,7 +54,7 @@ export default function LoginPage() {
   return (
     <div>
       <h1>Welcome, {profile?.displayName}</h1>
-        <Image
+        <img
         src={profile.pictureUrl as string}
         alt="profile"
         width={120}
