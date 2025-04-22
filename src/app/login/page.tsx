@@ -1,79 +1,134 @@
-'use client'
-import type { LineProfile, UserProfile } from '@/lib/types';
+'use client';
+import { useEffect, useState } from 'react';
+import liff from '@line/liff';
+import { supabase } from '@/lib/supabase';
+import type { LineProfile } from '@/lib/types';
 
-import { useEffect, useState } from 'react'
-import liff from '@line/liff'
-import { saveUserProfile } from '@/lib/supabase'
+export default function UpdateLatestUserWithLINE() {
+  const [profile, setProfile] = useState<LineProfile | null>(null);
+  const [latestUserId, setLatestUserId] = useState<number | null>(null);
+  const [displayName, setDisplayName] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-
-
-export default function LoginPage() {
-    const platform = 'line';
-  const [profile, setProfile] = useState<LineProfile | null>(null)
-
-    const handleLogout = () => {
-        liff.logout();
-        setProfile(null); // ล้างข้อมูลจาก state    
-        window.location.replace('/login');
-    };
+  const handleLogout = () => {
+    liff.logout();
+    setProfile(null);
+    window.location.replace('/login');
+  };
 
   useEffect(() => {
     const init = async () => {
       try {
-        if (platform === 'line') {
-            await liff.init({ 
-                liffId: process.env.NEXT_PUBLIC_LIFF_ID!, 
-                withLoginOnExternalBrowser: false, // 👈 ปิด auto login
-            })
+        alert("🟡 Initializing LIFF...");
+        await liff.init({
+          liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
+          withLoginOnExternalBrowser: true,
+        });
+        alert("✅ LIFF initialized");
 
-            if (!liff.isLoggedIn()) {
-                liff.login()
-            } else {
-                const rawProfile = await liff.getProfile();
-
-                const userProfile: LineProfile = {
-                userId: rawProfile.userId,
-                displayName: rawProfile.displayName,
-                pictureUrl: rawProfile.pictureUrl ?? '', // ✅ fallback ถ้า undefined
-                };
-                setProfile(userProfile);
-
-                const payload: UserProfile = {
-                    line_id: userProfile.userId,
-                    display_name: userProfile.displayName,
-                    avatar: userProfile.pictureUrl
-                };
-
-                const result = await saveUserProfile(payload);
-                const error = result?.error;
-
-                if (error) console.error('Supabase error:', error)
-            }
+        if (!liff.isLoggedIn()) {
+          alert("🔁 Not logged in. Redirecting to LIFF login...");
+          liff.login({
+            redirectUri: window.location.href,
+          });
+          return;
         }
-        // TODO: Add more platform auth (e.g., Facebook) here
-      } catch (err) {
-        console.error(`${platform} init error:`, err)
+
+        alert("✅ Already logged in, fetching profile...");
+        const rawProfile = await liff.getProfile();
+        alert(`👤 LINE Profile: ${rawProfile.displayName}`);
+
+        const userProfile: LineProfile = {
+          userId: rawProfile.userId,
+          displayName: rawProfile.displayName,
+          pictureUrl: rawProfile.pictureUrl ?? '',
+        };
+        setProfile(userProfile);
+        setDisplayName(userProfile.displayName);
+        setAvatar(userProfile.pictureUrl ?? '');
+
+        const { data: sessionData } = await supabase.auth.getSession();
+        alert(`🔐 Supabase Session: ${sessionData.session ? "Yes" : "No"}`);
+
+        if (!sessionData.session) {
+          const { error: anonLoginError } = await supabase.auth.signInAnonymously();
+          if (anonLoginError) {
+            alert(`❌ Failed anon login: ${anonLoginError.message}`);
+            return;
+          }
+          alert("✅ Anonymous login successful");
+        }
+
+        const { data, error: fetchError } = await supabase
+          .from('users')
+          .select('id')
+          .order('id', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (fetchError) {
+          alert(`❌ Fetch latest user error: ${fetchError.message}`);
+          setError(fetchError.message);
+        } else if (data) {
+          alert(`✅ Latest user ID: ${data.id}`);
+          setLatestUserId(data.id);
+        }
+      } catch (err: any) {
+        alert(`❌ LIFF init error: ${err.message}`);
+        console.error('❌ init error:', err);
       }
+    };
+
+    init();
+  }, []);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!latestUserId || !profile) {
+      setError('Missing user info');
+      return;
     }
 
-    init()
-  }, [platform])
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({
+        line_id: profile.userId,
+        display_name: displayName,
+        avatar: avatar,
+      })
+      .eq('id', latestUserId);
 
-  if (!profile) return <p>Loading...</p>
+    if (updateError) {
+      setError(updateError.message);
+    } else {
+      setSuccess('User info updated!');
+    }
+  };
+
+  if (!profile) return <p>Loading LINE profile...</p>;
 
   return (
     <div>
-      <h1>Welcome, {profile?.displayName}</h1>
-        <img
-        src={profile.pictureUrl ?? ''}
-        alt="profile"
-        width={120}
-        height={120}
+      <h1>Welcome, {profile.displayName}</h1>
+      <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
+      <form onSubmit={handleUpdate}>
+        <input
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          placeholder="Edit display name"
+          required
         />
-        <button onClick={handleLogout}>
-            Logout
-        </button>
+        <button type="submit">Update Latest User</button>
+      </form>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {success && <p style={{ color: 'green' }}>{success}</p>}
+      <button onClick={handleLogout}>Logout</button>
     </div>
-  )
+  );
 }
-
