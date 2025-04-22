@@ -23,7 +23,8 @@ export default function UpdateLatestUserWithLINE() {
   useEffect(() => {
     const start = async () => {
       try {
-        alert("🟡 Starting LIFF init...");
+        // alert("🟡 Starting LIFF init...");
+        console.log("🟡 Starting LIFF init...");
         const searchParams = new URLSearchParams(window.location.search);
         const tempId = searchParams.get('temp');
         // alert("The tempID: "+ tempId);
