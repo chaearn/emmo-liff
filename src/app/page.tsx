@@ -13,19 +13,27 @@ const AddUser: React.FC = () => {
     setError(null);
     setSuccess(null);
 
-    const { data, error } = await supabase.from('users').insert([{ name }]).select().single();
+    const { data, error } = await supabase.from('users').insert([{ name }]);
 
+    if (data) {
+        console.log('Inserted row:', data);
+      }
+      
     if (error) {
       setError(error.message);
     } else {
       setSuccess('User added successfully!');
       setName('');
+      // ✅ จากนั้นใช้อีก query เพื่อ select id ล่าสุด (ต้องมี policy READ ด้วยนะ)
+      const { data: latest } = await supabase
+      .from('users')
+      .select('id')
+      .order('id', { ascending: false })
+      .limit(1);
 
-      // ⏺ Save the inserted row id in localStorage
-      if (data && data.id) {
-        localStorage.setItem('pendingUserId', data.id.toString());
+      if (latest && latest.length > 0) {
+        localStorage.setItem('pendingUserId', latest[0].id.toString());
       }
-
       router.push('/login');
     }
   };
