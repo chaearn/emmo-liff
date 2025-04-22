@@ -12,7 +12,10 @@ type SupabaseResult = {
 };
 
 export async function saveUserProfile(profile: UserProfile): Promise<SupabaseResult> {
-  const { data, error } = await supabase
+    const session = await supabase.auth.getSession();
+    console.log('🧪 Session:', session);
+    
+    const { data, error } = await supabase
     .from('users')
     .upsert({
       line_id: profile.line_id,
