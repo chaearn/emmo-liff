@@ -27,6 +27,7 @@ export default function UpdateLatestUserWithLINE() {
         const searchParams = new URLSearchParams(window.location.search);
         const tempId = searchParams.get('temp');
         // alert("The tempID: "+ tempId);
+        console.log("The tempID: "+ tempId);
         // 🧠 Save tempId into localStorage BEFORE redirect
         if (tempId) {
         localStorage.setItem('pendingTempId', tempId);
@@ -48,9 +49,11 @@ export default function UpdateLatestUserWithLINE() {
   
         const token = liff.getAccessToken();
         // alert(`🔐 Token: ${token}`);
+        console.log(`🔐 Token: ${token}`);
   
         const rawProfile = await liff.getProfile();
         // alert(`👤 Profile: ${rawProfile.displayName}`);
+        console.log(`👤 Profile: ${rawProfile.displayName}`);
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const tempIdFromHash = hashParams.get('temp');
@@ -59,6 +62,7 @@ export default function UpdateLatestUserWithLINE() {
 
         if (!effectiveTempId) {
             // alert('❌ Missing temp ID');
+            console.log('❌ Missing temp ID');
             return;
         }
 
