@@ -6,9 +6,9 @@ import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
   const [profile, setProfile] = useState<LineProfile | null>(null);
-  const [latestUserId, setLatestUserId] = useState<number | null>(null);
+  const [latestUserId] = useState<number | null>(null);
   const [displayName, setDisplayName] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [avatar] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
