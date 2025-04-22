@@ -1,37 +1,75 @@
-'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export default function HomePage() {
-  const [name, setName] = useState('')
-  const router = useRouter()
+  const [name, setName] = useState<string>(''); // ✅ ระบุ type ชัดเจน
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleNext = async () => {
-    if (!name) return alert('กรอกชื่อก่อนน้าา')
-
-    const { error } = await supabase
-      .from('users')
-      .insert([{ prefer_name: name }]) // ✅ เพิ่ม row แค่ prefer_name
-
-    if (error) {
-      console.error('❌ Failed to insert name:', error)
-      return alert('มีบางอย่างผิดพลาดจ้า')
+    if (!name.trim()) {
+      alert('กรุณากรอกชื่อที่อยากให้ Emmo เรียก');
+      return;
     }
 
-    router.push('/login') // ✅ ไปหน้า login ต่อ
-  }
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from('users')
+      .insert({ prefer_name: name })
+      .select()
+      .single();
+
+    setLoading(false);
+
+    if (error) {
+      console.error('❌ Failed to insert name:', error.message);
+      alert('บันทึกชื่อไม่สำเร็จ ลองอีกครั้งนะ');
+      return;
+    }
+
+    // ✅ Redirect ไปหน้า login พร้อมแนบ user id (optionally)
+    router.push('/login'); // หรือ `/login?id=${data.id}` ถ้าอยากใช้ต่อ
+  };
 
   return (
-    <div>
-      <h1>ชื่อที่อยากให้ Emmo เรียกคุณคือ?</h1>
+    <div style={{ padding: '2rem', maxWidth: 400 }}>
+      <h1>ยินดีที่ได้รู้จัก 🌱</h1>
+      <p>อยากให้ Emmo เรียกแกว่าอะไรดี?</p>
+
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="พิมพ์ชื่อเล่น"
+        placeholder="เช่น: เอิร์น"
+        style={{
+          padding: '0.5rem',
+          fontSize: '1rem',
+          width: '100%',
+          marginBottom: '1rem',
+          borderRadius: 8,
+          border: '1px solid #ccc',
+        }}
       />
-      <button onClick={handleNext}>Next</button>
+
+      <button
+        onClick={handleNext}
+        disabled={loading}
+        style={{
+          padding: '0.75rem',
+          width: '100%',
+          fontSize: '1rem',
+          borderRadius: 8,
+          backgroundColor: '#111827',
+          color: '#fff',
+          cursor: loading ? 'not-allowed' : 'pointer',
+        }}
+      >
+        {loading ? 'กำลังบันทึก...' : 'ถัดไป'}
+      </button>
     </div>
-  )
+  );
 }
