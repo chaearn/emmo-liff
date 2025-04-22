@@ -79,7 +79,7 @@ export default function UpdateLatestUserWithLINE() {
                 avatar: parsedProfile.pictureUrl,
             })
             .eq('id', effectiveTempId as string)
-            .select(); // ⬅️ เพิ่มอันนี้เพื่อให้มันส่งข้อมูลกลับมา // 💥 ใช้ id จาก URL query param
+            .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
 
         if (updateError) {
             console.error('❌ Failed to update user:', updateError.message);
