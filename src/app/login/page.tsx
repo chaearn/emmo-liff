@@ -5,34 +5,43 @@ import { supabase } from '@/lib/supabase';
 import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
-  const [profile, setProfile] = useState<LineProfile | null>(null);
-  const [latestUserId ] = useState<number | null>(null);
-  const [displayName, setDisplayName] = useState('');
-  const [avatar] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+    const [profile, setProfile] = useState<LineProfile | null>(null);
+    const [latestUserId ] = useState<number | null>(null);
+    const [displayName, setDisplayName] = useState('');
+    const [avatar] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
-  const handleLogout = () => {
-    liff.logout();
-    setProfile(null);
-    window.location.replace('/login');
-  };
+    const handleLogout = () => {
+        liff.logout();
+        setProfile(null);
+        window.location.replace('/login');
+    };
+
+    
 
   useEffect(() => {
     const start = async () => {
       try {
         alert("🟡 Starting LIFF init...");
-  
+        const searchParams = new URLSearchParams(window.location.search);
+        const tempId = searchParams.get('temp');
+        alert("The tempID: "+ tempId);
+        // 🧠 Save tempId into localStorage BEFORE redirect
+        if (tempId) {
+        localStorage.setItem('pendingTempId', tempId);
+        }
         await liff.init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
         });
         alert("✅ LIFF initialized");
-  
+        
+
         if (!liff.isLoggedIn()) {
           alert("🔁 Not logged in, redirecting...");
           liff.login({
-            redirectUri: `${window.location.origin}/login`,
+            redirectUri: `${window.location.origin}/login#temp=${tempId}`,
           });
           return;
         }
@@ -43,10 +52,8 @@ export default function UpdateLatestUserWithLINE() {
         const rawProfile = await liff.getProfile();
         alert(`👤 Profile: ${rawProfile.displayName}`);
 
-        const searchParams = new URLSearchParams(window.location.search);
-      const tempId = searchParams.get('temp');
-
-      if (!tempId) {
+        const savedTempId = localStorage.getItem('pendingTempId');
+      if (!savedTempId) {
         alert('❌ Missing temp ID');
         return;
       }
@@ -58,13 +65,13 @@ export default function UpdateLatestUserWithLINE() {
           };
 
         const { error: updateError } = await supabase
-            .from('users')
+            .from('emmo_users')
             .update({
                 line_id: parsedProfile.userId,
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', parseInt(tempId, 10)); // 💥 ใช้ id จาก URL query param
+            .eq('id', parseInt(savedTempId, 10)); // 💥 ใช้ id จาก URL query param
 
         if (updateError) {
             alert(`❌ Failed to update user: ${updateError.message}`);
@@ -98,7 +105,7 @@ export default function UpdateLatestUserWithLINE() {
     }
 
     const { error: updateError } = await supabase
-      .from('users')
+      .from('emmo_users')
       .update({
         line_id: profile.userId,
         display_name: displayName,

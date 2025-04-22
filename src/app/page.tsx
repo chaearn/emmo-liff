@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 
-const AddUser: React.FC = () => {
+const AddUserPage: React.FC = () => {
   const [name, setName] = useState('');
-  const [rowId, setRowId] = useState<string | null>(null);
+  const [tempId, setTempId] = useState<string | null>(null); // save uuid only
+  const [rowId, setRowId] = useState<string | null>(null); // real row id
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -14,38 +15,28 @@ const AddUser: React.FC = () => {
   const handleAddUser = async () => {
     setError('');
     setSuccess('');
+    const newTempId = uuidv4();
+    setTempId(newTempId);
 
-    const tempId = uuidv4();
-
-    const { error: insertError } = await supabase.from('users').insert([
-      {
-        name,
-        display_name: tempId, // ใช้ tempId ชั่วคราวไว้ตามหา row
-      },
+    const { error: insertError } = await supabase.from('emmo_users').insert([
+      { name, display_name: newTempId },
     ]);
 
     if (insertError) {
-      setError(`❌ เกิดข้อผิดพลาด: ${insertError.message}`);
+      console.error('❌ Insert Error:', insertError.message);
+      setError(`❌ บันทึกล้มเหลว: ${insertError.message}`);
       return;
     }
 
-    // 🔍 หา row ที่เพิ่งสร้างจาก display_name = tempId
-    const { data: match, error: selectError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('display_name', tempId)
-      .order('id', { ascending: false })
-      .limit(1);
-
-    if (selectError || !match || match.length === 0) {
-      setError('❌ ไม่สามารถค้นหา row ที่เพิ่งเพิ่มได้');
-      return;
-    }
-
-    setRowId(match[0].id);
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
     setName('');
   };
+
+  const handleFindRow = async () => {
+   
+    router.push(`/login?temp=${tempId}`);
+  };
+
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -55,7 +46,12 @@ const AddUser: React.FC = () => {
                 <h1 style={{ fontWeight: 'bold', fontSize: '2rem'}}>ยินดีที่ได้รู้จัก 🌱</h1>
                 <p>ตอนคุยกันให้เราเรียกเธอว่าอะไรดี?</p>    
             </div>
-            <form onSubmit={handleAddUser}>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault(); // ✅ ป้องกัน reload
+                handleAddUser();    // ✅ เรียกแค่รอบเดียว
+              }}
+            >
                 <input
                 type="text"
                 placeholder="ใส่ชื่อเล่นของเธอ..."
@@ -73,31 +69,30 @@ const AddUser: React.FC = () => {
                 }}
                 />
                 <button
-                  onClick={handleAddUser}
-                  className="bg-black text-white px-6 py-2 rounded"
+                  type="submit"
+                  style={{ padding: '0.75rem', width: '100%', fontSize: '1rem', borderRadius: '8px', backgroundColor: '#111827', color: '#fff' }}
                 >
                   💾 บันทึกชื่อ
                 </button>
-                {success && (
-                  <>
-                    <p className="text-green-600">{success}</p>
-                    <button
-                      onClick={() => router.push(`/login?temp=${rowId}`)}
-                      style={{ padding:'0.75rem', width:'100%', fontSize:'1rem',  borderRadius:'8px', backgroundColor:'#111827', color:'#fff'}}
-                      className="mt-4 bg-blue-600 text-white px-6 py-2 rounded"
-                    >
-                      ➡️ ไปต่อเลย
-                    </button>
-                  </>
-                )}
-                {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
-            
+
+              
             </form>
-            
+            {success && (
+            <button
+              onClick={handleFindRow}
+              style={{ marginTop: '1rem', padding: '0.75rem', width: '100%', fontSize: '1rem', borderRadius: '8px', backgroundColor: '#111827', color: '#fff' }}
+            >
+              ➡️ ไปต่อเลย
+            </button>
+          )}
+
+          {success && <p style={{ color: 'green', textAlign: 'center', marginTop: '1rem' }}>{success}</p>}
+          {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
+
         </div>
         </main>
         </div>
   );
 };
 
-export default AddUser;
+export default AddUserPage;
