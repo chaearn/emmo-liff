@@ -19,7 +19,7 @@ export async function saveUserProfile(profile: UserProfile): Promise<SupabaseRes
       display_name: profile.display_name,
       avatar: profile.avatar,
     });
-
+    console.log(error)
   return { data, error };
 }
 
