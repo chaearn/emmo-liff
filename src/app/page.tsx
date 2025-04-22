@@ -1,51 +1,9 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-
-
 import Image from "next/image";
 
 export default function Home() {
-
-  const [name, setName] = useState<string>(''); // ✅ ระบุ type ชัดเจน
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleNext = async () => {
-    if (!name.trim()) {
-      alert('กรุณากรอกชื่อที่อยากให้ Emmo เรียก');
-      return;
-    }
-
-    setLoading(true);
-
-    // const { data, error } = await supabase
-    //   .from('users')
-    //   .insert({ prefer_name: name })
-    //   .select()
-    //   .single();
-
-    setLoading(false);
-
-    // if (error) {
-    //   console.error('❌ Failed to insert name:', error.message);
-    //   alert('บันทึกชื่อไม่สำเร็จ ลองอีกครั้งนะ');
-    //   return;
-    // }
-
-    // ✅ Redirect ไปหน้า login พร้อมแนบ user id (optionally)
-    router.push('/login'); // หรือ `/login?id=${data.id}` ถ้าอยากใช้ต่อ
-  };
-
   return (
-    
-    
-    
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -54,42 +12,6 @@ export default function Home() {
           height={38}
           priority
         />
-
-<div style={{ padding: '2rem', maxWidth: 400 }}>
-    <h1>ยินดีที่ได้รู้จัก 🌱</h1>
-    <p>อยากให้ Emmo เรียกแกว่าอะไรดี?</p>
-
-    <input
-      type="text"
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-      placeholder="เช่น: เอิร์น"
-      style={{
-        padding: '0.5rem',
-        fontSize: '1rem',
-        width: '100%',
-        marginBottom: '1rem',
-        borderRadius: 8,
-        border: '1px solid #ccc',
-      }}
-    />
-
-    <button
-      onClick={handleNext}
-      disabled={loading}
-      style={{
-        padding: '0.75rem',
-        width: '100%',
-        fontSize: '1rem',
-        borderRadius: 8,
-        backgroundColor: '#111827',
-        color: '#fff',
-        cursor: loading ? 'not-allowed' : 'pointer',
-      }}
-    >
-      {loading ? 'กำลังบันทึก...' : 'ถัดไป'}
-    </button>
-  </div>
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{" "}
@@ -175,10 +97,7 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
-        
       </footer>
     </div>
-
-    
   );
 }
