@@ -5,14 +5,17 @@ import { useEffect, useState } from 'react'
 import liff from '@line/liff'
 import { saveUserProfile } from '@/lib/supabase'
 
-const handleLogout = () => {
-    liff.logout();
-    window.location.replace('/login'); // หรือใช้ router.replace('/login') ก็ได้
-};
+
 
 export default function LoginPage() {
     const platform = 'line';
   const [profile, setProfile] = useState<LineProfile | null>(null)
+
+    const handleLogout = () => {
+        liff.logout();
+        setProfile(null); // ล้างข้อมูลจาก state    
+        window.location.replace('/login'); // หรือใช้ router.replace('/login') ก็ได้
+    };
 
   useEffect(() => {
     const init = async () => {
