@@ -20,6 +20,7 @@ export async function saveUserProfile(profile: UserProfile): Promise<SupabaseRes
       avatar: profile.avatar,
     });
     console.log(error)
+    console.log(supabase.auth.getSession())
   return { data, error };
 }
 
