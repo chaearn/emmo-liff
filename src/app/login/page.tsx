@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import liff from '@line/liff';
 import { supabase } from '@/lib/supabase';
-import type { LineProfile, UserProfile } from '@/lib/types';
+import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
   const [profile, setProfile] = useState<LineProfile | null>(null);

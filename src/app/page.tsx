@@ -1,9 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
-import { useState } from 'react';
-import type { UserProfile } from '@/lib/types';
-import { supabase } from '@utils/supabase/client';
 
 
 

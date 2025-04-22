@@ -2,7 +2,6 @@
 'use client';
 import { useState } from 'react';
 import { supabase } from '@utils/supabase/client';
-import { UserProfile } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 
 const AddUser: React.FC = () => {
