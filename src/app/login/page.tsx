@@ -71,7 +71,7 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
-        const { error: updateError } = await supabase
+        const { data: updateData, error: updateError } = await supabase
             .from('emmo_users')
             .update({
                 line_id: parsedProfile.userId,
@@ -86,6 +86,7 @@ export default function UpdateLatestUserWithLINE() {
         } else {
             console.log('✅ User updated in Supabase');
             alert('✅ LINE info updated!');
+            console.log('📥 Updated row data:', updateData);
         }
 
         setProfile(parsedProfile);
