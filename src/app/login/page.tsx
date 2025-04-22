@@ -14,7 +14,7 @@ export default function LoginPage() {
     const handleLogout = () => {
         liff.logout();
         setProfile(null); // ล้างข้อมูลจาก state    
-        window.location.replace('https://line.me');
+        window.location.replace('/login');
     };
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function LoginPage() {
       try {
         if (platform === 'line') {
             await liff.init({ 
-                liffId: process.env.NEXT_PUBLIC_LIFF_ID! 
+                liffId: process.env.NEXT_PUBLIC_LIFF_ID!, 
                 withLoginOnExternalBrowser: false, // 👈 ปิด auto login
             })
 
