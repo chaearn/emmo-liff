@@ -12,16 +12,22 @@ type SupabaseResult = {
 };
 
 export async function saveUserProfile(profile: UserProfile): Promise<SupabaseResult> {
-  const { data, error } = await supabase
-    .from('users')
-    .upsert({
-      line_id: profile.line_id,
-      display_name: profile.display_name,
-      avatar: profile.avatar,
-    });
-    console.log(error)
-    console.log(supabase.auth.getSession())
-  return { data, error };
-}
+    const { data, error } = await supabase
+        .from('users')
+        .upsert({
+            line_id: profile.line_id,
+            display_name: profile.display_name,
+            avatar: profile.avatar,
+        });
+  
+    if (error) {
+        console.error('❌ Supabase error when saving user profile:', error.message);
+    }
+  
+    const session = await supabase.auth.getSession();
+    console.log('📦 Current Supabase session:', session);
+  
+    return { data, error };
+  }
 
 export default supabase;
