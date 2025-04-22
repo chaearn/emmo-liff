@@ -7,8 +7,8 @@ import { saveUserProfile } from '@/lib/supabase'
 
 const handleLogout = () => {
     liff.logout();
-    window.location.reload(); // หรือ redirect ไปหน้า /login ก็ได้
-  };
+    window.location.replace('/'); // หรือใช้ router.replace('/login') ก็ได้
+};
 
 export default function LoginPage() {
     const platform = 'line';
