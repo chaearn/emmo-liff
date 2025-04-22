@@ -26,7 +26,7 @@ export default function UpdateLatestUserWithLINE() {
         alert("🟡 Starting LIFF init...");
         const searchParams = new URLSearchParams(window.location.search);
         const tempId = searchParams.get('temp');
-        alert("The tempID: "+ tempId);
+        // alert("The tempID: "+ tempId);
         // 🧠 Save tempId into localStorage BEFORE redirect
         if (tempId) {
         localStorage.setItem('pendingTempId', tempId);
@@ -35,11 +35,11 @@ export default function UpdateLatestUserWithLINE() {
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
         });
-        alert("✅ LIFF initialized");
+        // alert("✅ LIFF initialized");
         
 
         if (!liff.isLoggedIn()) {
-          alert("🔁 Not logged in, redirecting...");
+        //   alert("🔁 Not logged in, redirecting...");
           liff.login({
             redirectUri: `${window.location.origin}/login#temp=${tempId}`,
           });
@@ -47,10 +47,10 @@ export default function UpdateLatestUserWithLINE() {
         }
   
         const token = liff.getAccessToken();
-        alert(`🔐 Token: ${token}`);
+        // alert(`🔐 Token: ${token}`);
   
         const rawProfile = await liff.getProfile();
-        alert(`👤 Profile: ${rawProfile.displayName}`);
+        // alert(`👤 Profile: ${rawProfile.displayName}`);
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const tempIdFromHash = hashParams.get('temp');
@@ -58,7 +58,7 @@ export default function UpdateLatestUserWithLINE() {
         const effectiveTempId = savedTempId || tempIdFromHash;
 
         if (!effectiveTempId) {
-            alert('❌ Missing temp ID');
+            // alert('❌ Missing temp ID');
             return;
         }
 
@@ -83,10 +83,10 @@ export default function UpdateLatestUserWithLINE() {
 
         if (updateError) {
             console.error('❌ Failed to update user:', updateError.message);
-            alert(`❌ Failed to update user: ${updateError.message}`);
+            // alert(`❌ Failed to update user: ${updateError.message}`);
         } else {
             console.log('✅ User updated in Supabase');
-            alert('✅ LINE info updated!');
+            // alert('✅ LINE info updated!');
             console.log('📥 Updated row data:', updateData);
         }
 
@@ -99,9 +99,9 @@ export default function UpdateLatestUserWithLINE() {
         // ...rest of the logic...
       } catch (err) {
         if (err instanceof Error) {
-          alert(`❌ Unexpected error: ${err.message}`);
+        //   alert(`❌ Unexpected error: ${err.message}`);
         } else {
-          alert('❌ Unknown error');
+        //   alert('❌ Unknown error');
         }
       }
     };
