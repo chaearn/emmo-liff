@@ -4,7 +4,6 @@ import type { LineProfile, UserProfile } from '@/lib/types';
 import { useEffect, useState } from 'react'
 import liff from '@line/liff'
 import { saveUserProfile } from '@/lib/supabase'
-import Image from 'next/image'
 
 export default function LoginPage() {
     const platform = 'line';
@@ -63,3 +62,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
