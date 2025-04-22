@@ -83,15 +83,16 @@ const AddUser: React.FC = () => {
                     <p className="text-green-600">{success}</p>
                     <button
                       onClick={() => router.push(`/login?temp=${rowId}`)}
+                      style={{ padding:'0.75rem', width:'100%', fontSize:'1rem',  borderRadius:'8px', backgroundColor:'#111827', color:'#fff'}}
                       className="mt-4 bg-blue-600 text-white px-6 py-2 rounded"
                     >
                       ➡️ ไปต่อเลย
                     </button>
                   </>
                 )}
-                
+                {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
+            
             </form>
-            {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
             
         </div>
         </main>
