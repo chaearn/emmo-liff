@@ -42,6 +42,13 @@ export default function UpdateLatestUserWithLINE() {
   
         const rawProfile = await liff.getProfile();
         alert(`👤 Profile: ${rawProfile.displayName}`);
+        const parsedProfile: LineProfile = {
+            userId: rawProfile.userId,
+            displayName: rawProfile.displayName,
+            pictureUrl: rawProfile.pictureUrl || '', // fallback if undefined
+          };
+          
+          setProfile(parsedProfile);
 
         // Fetch latest user from Supabase
         const { data, error } = await supabase
