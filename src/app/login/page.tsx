@@ -28,17 +28,17 @@ export default function UpdateLatestUserWithLINE() {
         });
         alert("✅ LIFF initialized");
 
-        alert("🧪 Checking if logged in...");
-        const loggedIn = liff.isLoggedIn();
-        alert(`🔍 isLoggedIn = ${loggedIn}`);
-
-        alert("✅ Already logged in, fetching profile...");
         const token = liff.getAccessToken();
+        alert(`🧪 Checking LIFF access token... token = ${token}`);
+
         if (!token) {
-          alert("🚨 No LIFF token after login. Forcing reload...");
-          window.location.reload();
+          alert("🔁 No token, redirecting to LIFF login...");
+          liff.login({ redirectUri: window.location.href });
           return;
         }
+
+        alert("✅ LIFF token found, fetching profile...");
+
         const rawProfile = await liff.getProfile();
         alert(`👤 LINE Profile: ${rawProfile.displayName}`);
 
