@@ -31,7 +31,9 @@ export default function UpdateLatestUserWithLINE() {
   
         if (!liff.isLoggedIn()) {
           alert("🔁 Not logged in, redirecting...");
-          liff.login({ redirectUri: window.location.href });
+          liff.login({
+            redirectUri: `${window.location.origin}/login`,
+          });
           return;
         }
   
