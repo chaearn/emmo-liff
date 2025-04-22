@@ -15,7 +15,7 @@ export default function UpdateLatestUserWithLINE() {
     const handleLogout = () => {
         liff.logout();
         setProfile(null);
-        window.location.replace('/login');
+        window.location.replace('/');
     };
 
     
