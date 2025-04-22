@@ -78,11 +78,7 @@ const AddUser: React.FC = () => {
                 >
                   💾 บันทึกชื่อ
                 </button>
-
-                
-            </form>
-            {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
-            {success && (
+                {success && (
                   <>
                     <p className="text-green-600">{success}</p>
                     <button
@@ -93,6 +89,10 @@ const AddUser: React.FC = () => {
                     </button>
                   </>
                 )}
+                
+            </form>
+            {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '1rem' }}>{error}</p>}
+            
         </div>
         </main>
         </div>
