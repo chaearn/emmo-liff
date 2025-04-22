@@ -25,7 +25,7 @@ const AddUser: React.FC = () => {
       setSuccess('User added successfully!');
       setName('');
       
-      router.push('/login')
+      router.push('/login');
     }
   };
 
