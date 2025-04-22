@@ -68,6 +68,9 @@ export default function UpdateLatestUserWithLINE() {
             pictureUrl: rawProfile.pictureUrl || '', // fallback if undefined
           };
 
+        console.log('🧩 Trying to update user with ID:', effectiveTempId);
+        console.log('📦 Payload to update:', parsedProfile);
+
         const { error: updateError } = await supabase
             .from('emmo_users')
             .update({
@@ -75,11 +78,13 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', effectiveTempId); // 💥 ใช้ id จาก URL query param
+            .eq('id', effectiveTempId as string); // 💥 ใช้ id จาก URL query param
 
         if (updateError) {
+            console.error('❌ Failed to update user:', updateError.message);
             alert(`❌ Failed to update user: ${updateError.message}`);
         } else {
+            console.log('✅ User updated in Supabase');
             alert('✅ LINE info updated!');
         }
 
