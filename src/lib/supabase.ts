@@ -16,7 +16,7 @@ export async function saveUserProfile(profile: UserProfile): Promise<SupabaseRes
     .from('users')
     .upsert({
       line_id: profile.line_id,
-      name: profile.display_name,
+      display_name: profile.display_name,
       avatar: profile.avatar,
     });
 
