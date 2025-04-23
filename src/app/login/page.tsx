@@ -91,6 +91,13 @@ export default function UpdateLatestUserWithLINE() {
         if (updateError) {
             console.error('❌ Failed to update user:', updateError.message);
             alert(`❌ Failed to update user: ${updateError.message}`);
+            if (updateError.message.includes('duplicate key value violates unique constraint "users_line_id_key"')) {
+                setError('บัญชี LINE นี้เชื่อมกับ Emmo ไปแล้ว');
+                // แสดงข้อความก่อน redirect
+                setTimeout(() => {
+                  window.location.href = '/profile';
+                }, 3000);} // ⏱️ รอ 3 วินาทีค่อย redirect
+                
         } else {
             console.log('✅ User updated in Supabase');
             alert('✅ LINE info updated!');
@@ -126,6 +133,11 @@ export default function UpdateLatestUserWithLINE() {
   return (
     <div style={{display:'flex', width:'100%', height:'100%'}}>
       <h1>Loading Profile</h1>      
+     
     </div>
   );
+}
+
+function setError(arg0: string) {
+    throw new Error('Function not implemented.');
 }
