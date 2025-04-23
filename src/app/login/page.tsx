@@ -6,12 +6,12 @@ import type { LineProfile, userNICKNAME } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
     const [profile, setProfile] = useState<LineProfile | null>(null);
-    // const [latestUserId ] = useState<number | null>(null);
-    // const [displayName, setDisplayName] = useState('');
-    // const [avatar] = useState('');
+    const [latestUserId ] = useState<number | null>(null);
+    const [displayName, setDisplayName] = useState('');
+    const [avatar] = useState('');
     const [NICKNAME, setNICKNAME] = useState<userNICKNAME | null>(null);
-    const [error] = useState<string | null>(null);
-    const [success] = useState<string | null>(null);
+    const [error , setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     const handleLogout = () => {
         liff.logout();
@@ -111,31 +111,31 @@ export default function UpdateLatestUserWithLINE() {
     start();
   }, []);
 
-//   const handleUpdate = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setError(null);
-//     setSuccess(null);
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
 
-//     if (!latestUserId || !profile) {
-//       setError('Missing user info');
-//       return;
-//     }
+    if (!latestUserId || !profile) {
+      setError('Missing user info');
+      return;
+    }
 
-//     const { error: updateError } = await supabase
-//       .from('emmo_users')
-//       .update({
-//         line_id: profile.userId,
-//         display_name: displayName,
-//         avatar: avatar,
-//       })
-//       .eq('id', latestUserId);
+    const { error: updateError } = await supabase
+      .from('emmo_users')
+      .update({
+        line_id: profile.userId,
+        display_name: displayName,
+        avatar: avatar,
+      })
+      .eq('id', latestUserId);
 
-//     if (updateError) {
-//       setError(updateError.message);
-//     } else {
-//       setSuccess('User info updated!');
-//     }
-//   };
+    if (updateError) {
+      setError(updateError.message);
+    } else {
+      setSuccess('User info updated!');
+    }
+  };
 
   if (!profile) return <p>Loading LINE profile...</p>;
   console.log('🎉 Profile loaded', profile)
@@ -146,6 +146,16 @@ export default function UpdateLatestUserWithLINE() {
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
       <p>{profile.userId}</p>
       <p>{profile.displayName}</p>
+      <form onSubmit={handleUpdate}>
+        <input
+          type="text"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          placeholder="Edit display name"
+          required
+        />
+        <button type="submit">Update Latest User</button>
+      </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       <button onClick={handleLogout}>Logout</button>
