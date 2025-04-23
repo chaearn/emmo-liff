@@ -20,28 +20,25 @@ const AddUserPage: React.FC = () => {
     const { data: insertData, error: insertError } = await supabase
       .from('emmo_users')
       .insert([
-        { name, display_name: newTempId },
+        { name, display_name: newTempId || 'default_display_name' }, // Provide a default if newTempId is null
       ])
-      .select('id, name'); // Ensure select is chained correctly
+      .select('id, name');
 
     if (insertError) {
       console.error('❌ Insert Error:', insertError.message);
       setError(`❌ บันทึกล้มเหลว: ${insertError.message}`);
       return;
     } else {
-      
       const userID = localStorage.getItem('userID');
       console.log('📥 Saved user ID:', userID);
-      
     }
-    
-    const newUserId :string = insertData[0].id; // Get the ID of the newly created row
+
+    const newUserId: string = insertData[0].id; // Get the ID of the newly created row
     console.log('📥 New user ID:', newUserId);
     localStorage.setItem('userID', newUserId);
     // Store the nickname in local storage
     localStorage.setItem('userNickname', name);
-    
-    
+
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
     console.log('user nickname:', localStorage.getItem('userNickname'));
     
