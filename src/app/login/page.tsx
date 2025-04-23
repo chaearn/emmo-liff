@@ -11,6 +11,14 @@ export default function UpdateLatestUserWithLINE() {
     const [avatar] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [nickname, setNickname] = useState<string | null>(null);
+
+    useEffect(() => {
+      const storedNickname = localStorage.getItem('userNickname');
+      if (storedNickname) {
+        setNickname(storedNickname);
+      }
+    }, []);
 
     const handleLogout = () => {
         liff.logout();
@@ -67,7 +75,8 @@ export default function UpdateLatestUserWithLINE() {
             console.log('❌ Missing temp ID');
             return;
         }
-        const nickname = localStorage.getItem('userNickname');
+        const nickname = localStorage.getItem('userNickname') || '';
+        setNickname(nickname);
         console.log(`👤 nickname: `, nickname);
         await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
             method: 'POST',
@@ -160,7 +169,9 @@ export default function UpdateLatestUserWithLINE() {
       <h1>Welcome, {profile.displayName}</h1>
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
       <p>{profile.userId}</p>
-      <p></p>
+      
+        <p>ดีใจที่ได้เจออีกครั้งนะ {nickname} 😊</p>
+
       <form onSubmit={handleUpdate}>
         <input
           type="text"
