@@ -38,7 +38,8 @@ const AddUserPage: React.FC = () => {
   const handleFindRow = async () => {
     console.log('➡️ Going to login with tempId:', tempId);
     console.log('➡️ And nickname:', nickName);
-    router.push(`/login?temp=${tempId}&nickname=${nickName}`);
+    // router.push(`/login?temp=${tempId}&nickname=${nickName}`);
+    router.push(`/login?nickname=${nickName}`);
   };
 
 

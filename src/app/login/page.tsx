@@ -26,21 +26,23 @@ export default function UpdateLatestUserWithLINE() {
         window.location.replace('/');
     };
 
-    
-
   useEffect(() => {
     const start = async () => {
       try {
         // alert("🟡 Starting LIFF init...");
         console.log("🟡 Starting LIFF init...");
         const searchParams = new URLSearchParams(window.location.search);
-        const tempId = searchParams.get('temp');
+        // const tempId = searchParams.get('temp');
+        const tempNICKNAME = searchParams.get('temp');
         // alert("The tempID: "+ tempId);
-        console.log("The tempID: "+ tempId);
+        console.log("The tempID: "+ tempNICKNAME);
         // 🧠 Save tempId into localStorage BEFORE redirect
-        if (tempId) {
-        localStorage.setItem('pendingTempId', tempId);
-        }
+        // if (tempId) {
+        // localStorage.setItem('pendingTempId', tempId);
+        // }
+        if (tempNICKNAME) {
+            localStorage.setItem('pendingNICKNAME', tempNICKNAME);
+            }
         const latestNickname = localStorage.getItem('userNickname');
         if (latestNickname) {
           console.log('✅ Pulled nickname from localStorage:', latestNickname);
@@ -56,7 +58,7 @@ export default function UpdateLatestUserWithLINE() {
         if (!liff.isLoggedIn()) {
         //   alert("🔁 Not logged in, redirecting...");
           liff.login({
-            redirectUri: `${window.location.origin}/login#temp=${tempId}`,
+            redirectUri: `${window.location.origin}/login#nickname=${tempNICKNAME}`,
           });
           return;
         }
@@ -69,25 +71,44 @@ export default function UpdateLatestUserWithLINE() {
         // alert(`👤 Profile: ${rawProfile.displayName}`);
         console.log(`👤 Profile: ${rawProfile.displayName}`);
 
+        // const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        // const tempIdFromHash = hashParams.get('temp');
+        // const savedTempId = localStorage.getItem('pendingTempId');
+        // const effectiveTempId = savedTempId || tempIdFromHash;
+        
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
-        const tempIdFromHash = hashParams.get('temp');
-        const savedTempId = localStorage.getItem('pendingTempId');
-        const effectiveTempId = savedTempId || tempIdFromHash;
+        const tempNicknameFromHash = hashParams.get('nickname');
+        const savedTempNickname = localStorage.getItem('pendingNICKNAME');
+        const effectiveTempNICKNAME = savedTempNickname || tempNicknameFromHash;
         
-        
-        if (!effectiveTempId) {
+        // if (!effectiveTempId) {
+        //     // alert('❌ Missing temp ID');
+        //     console.log('❌ Missing temp ID');
+        //     return;
+        // }
+
+        if (!effectiveTempNICKNAME) {
             // alert('❌ Missing temp ID');
-            console.log('❌ Missing temp ID');
+            console.log('❌ Missing temp Nickname');
             return;
         }
         // Removed the local nickname variable and setNickname call here
         
         console.log(`👤 nickname: `, latestNickname);
+        // await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({
+        //       tempId: effectiveTempId,
+        //       name: nickname,
+        //     }),
+        //   });
+
         await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              tempId: effectiveTempId,
+              tempNICKNAME: effectiveTempNICKNAME,
               name: nickname,
             }),
           });
@@ -98,7 +119,7 @@ export default function UpdateLatestUserWithLINE() {
             pictureUrl: rawProfile.pictureUrl || '', // fallback if undefined
           };
 
-        console.log('🧩 Trying to update user with ID:', effectiveTempId);
+        console.log('🧩 Trying to update user with ID:', effectiveTempNICKNAME);
         console.log('📦 Payload to update:', parsedProfile);
 
         const { data: updateData, error: updateError } = await supabase
@@ -108,7 +129,7 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', effectiveTempId as string)
+            .eq('id', effectiveTempNICKNAME as string)
             .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
 
         if (updateError) {
