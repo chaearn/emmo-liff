@@ -2,15 +2,14 @@
 import { useEffect, useState } from 'react';
 import liff from '@line/liff';
 import { supabase } from '@/lib/supabase';
-import type { LineProfile, userNICKNAME } from '@/lib/types';
+import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
     const [profile, setProfile] = useState<LineProfile | null>(null);
     const [latestUserId ] = useState<number | null>(null);
     const [displayName, setDisplayName] = useState('');
     const [avatar] = useState('');
-    const [NICKNAME, setNICKNAME] = useState<userNICKNAME | null>(null);
-    const [error , setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
     const handleLogout = () => {
@@ -19,15 +18,15 @@ export default function UpdateLatestUserWithLINE() {
         window.location.replace('/');
     };
 
+    
+
   useEffect(() => {
     const start = async () => {
       try {
-        // alert("🟡 Starting LIFF init...");
-        console.log("🟡 Starting LIFF init...");
+        alert("🟡 Starting LIFF init...");
         const searchParams = new URLSearchParams(window.location.search);
         const tempId = searchParams.get('temp');
-        // alert("The tempID: "+ tempId);
-        console.log("The tempID: "+ tempId);
+        alert("The tempID: "+ tempId);
         // 🧠 Save tempId into localStorage BEFORE redirect
         if (tempId) {
         localStorage.setItem('pendingTempId', tempId);
@@ -36,11 +35,11 @@ export default function UpdateLatestUserWithLINE() {
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
         });
-        // alert("✅ LIFF initialized");
+        alert("✅ LIFF initialized");
         
 
         if (!liff.isLoggedIn()) {
-        //   alert("🔁 Not logged in, redirecting...");
+          alert("🔁 Not logged in, redirecting...");
           liff.login({
             redirectUri: `${window.location.origin}/login#temp=${tempId}`,
           });
@@ -48,12 +47,10 @@ export default function UpdateLatestUserWithLINE() {
         }
   
         const token = liff.getAccessToken();
-        // alert(`🔐 Token: ${token}`);
-        console.log(`🔐 Token: ${token}`);
+        alert(`🔐 Token: ${token}`);
   
         const rawProfile = await liff.getProfile();
-        // alert(`👤 Profile: ${rawProfile.displayName}`);
-        console.log(`👤 Profile: ${rawProfile.displayName}`);
+        alert(`👤 Profile: ${rawProfile.displayName}`);
 
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const tempIdFromHash = hashParams.get('temp');
@@ -61,8 +58,7 @@ export default function UpdateLatestUserWithLINE() {
         const effectiveTempId = savedTempId || tempIdFromHash;
 
         if (!effectiveTempId) {
-            // alert('❌ Missing temp ID');
-            console.log('❌ Missing temp ID');
+            alert('❌ Missing temp ID');
             return;
         }
 
@@ -75,19 +71,24 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
-        const { data: fetchData, error: fetchError } = await supabase
+        const { data: updateData, error: updateError } = await supabase
             .from('emmo_users')
-            .select('name')
-            .eq('display_name', effectiveTempId as string);
+            .update({
+                line_id: parsedProfile.userId,
+                display_name: parsedProfile.displayName,
+                avatar: parsedProfile.pictureUrl,
+            })
+            .eq('id', effectiveTempId as string)
+            .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
 
-        if (fetchError) {
-            console.error('❌ Error fetching user data: ', fetchError.message);
-        } else if (fetchData && fetchData.length > 0) {
-            console.log('📥 Fetched user data:', fetchData);
-            setNICKNAME(fetchData[0].name);
+        if (updateError) {
+            console.error('❌ Failed to update user:', updateError.message);
+            alert(`❌ Failed to update user: ${updateError.message}`);
+        } else {
+            console.log('✅ User updated in Supabase');
+            alert('✅ LINE info updated!');
+            console.log('📥 Updated row data:', updateData);
         }
-
-        console.log(NICKNAME);
 
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
@@ -98,9 +99,9 @@ export default function UpdateLatestUserWithLINE() {
         // ...rest of the logic...
       } catch (err) {
         if (err instanceof Error) {
-        //   alert(`❌ Unexpected error: ${err.message}`);
+          alert(`❌ Unexpected error: ${err.message}`);
         } else {
-        //   alert('❌ Unknown error');
+          alert('❌ Unknown error');
         }
       }
     };
@@ -142,7 +143,6 @@ export default function UpdateLatestUserWithLINE() {
       <h1>Welcome, {profile.displayName}</h1>
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
       <p>{profile.userId}</p>
-      <p>{profile.displayName}</p>
       <form onSubmit={handleUpdate}>
         <input
           type="text"

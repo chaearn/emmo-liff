@@ -27,8 +27,11 @@ const AddUserPage: React.FC = () => {
       return;
     }
 
+    localStorage.setItem('userNickname', name); // ✅ ได้ค่าแน่นอน
+    
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
-    setName('');
+    console.log('user nickname:', localStorage.getItem('userNickname'));
+    // setName('');
   };
 
   const handleFindRow = async () => {
