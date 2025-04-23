@@ -67,7 +67,7 @@ export default function UpdateLatestUserWithLINE() {
             console.log('❌ Missing temp ID');
             return;
         }
-        const nickname = localStorage.getItem('nickName');
+        const nickname = localStorage.getItem('userNickname');
         console.log(`👤 nickname: `, nickname);
         await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
             method: 'POST',
@@ -160,6 +160,7 @@ export default function UpdateLatestUserWithLINE() {
       <h1>Welcome, {profile.displayName}</h1>
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
       <p>{profile.userId}</p>
+      <p></p>
       <form onSubmit={handleUpdate}>
         <input
           type="text"
