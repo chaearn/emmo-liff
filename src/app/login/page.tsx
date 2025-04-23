@@ -140,5 +140,6 @@ export default function UpdateLatestUserWithLINE() {
 
 function setError(arg0: string) {
     console.log(arg0);
+    window.location.href = '/login';
     throw new Error('Function not implemented.');
 }
