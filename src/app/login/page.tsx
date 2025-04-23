@@ -6,11 +6,11 @@ import type { LineProfile } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
     const [profile, setProfile] = useState<LineProfile | null>(null);
-    const [latestUserId ] = useState<number | null>(null);
-    const [displayName, setDisplayName] = useState('');
-    const [avatar] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    // const [latestUserId ] = useState<number | null>(null);
+    // const [displayName, setDisplayName] = useState('');
+    // const [avatar] = useState('');
+    // const [error, setError] = useState<string | null>(null);
+    // const [success, setSuccess] = useState<string | null>(null);
 
     const handleLogout = () => {
         liff.logout();
@@ -119,32 +119,6 @@ export default function UpdateLatestUserWithLINE() {
   
     start();
   }, []);
-
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
-    if (!latestUserId || !profile) {
-      setError('Missing user info');
-      return;
-    }
-
-    const { error: updateError } = await supabase
-      .from('emmo_users')
-      .update({
-        line_id: profile.userId,
-        display_name: displayName,
-        avatar: avatar,
-      })
-      .eq('id', latestUserId);
-
-    if (updateError) {
-      setError(updateError.message);
-    } else {
-      setSuccess('User info updated!');
-    }
-  };
 
   if (!profile) return <p>Loading LINE profile...</p>;
   console.log('🎉 Profile loaded', profile)
