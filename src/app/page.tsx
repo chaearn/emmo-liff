@@ -9,6 +9,8 @@ const AddUserPage: React.FC = () => {
   const [tempId, setTempId] = useState<string | null>(null); // save uuid only
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [nickName, setNickName] = useState<string | null>(null); // save uuid only
+  
   const router = useRouter();
 
   const handleAddUser = async () => {
@@ -28,12 +30,16 @@ const AddUserPage: React.FC = () => {
     }
 
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
-    setName('');
+    localStorage.setItem('userNickname', name);
+    const newNickname = localStorage.getItem('userNickname');
+    setNickName(newNickname);
+
+    // setName('');
   };
 
   const handleFindRow = async () => {
    
-    router.push(`/login?temp=${tempId}`);
+    router.push(`/login?temp=${tempId}&nickname=${nickName}`);
   };
 
 

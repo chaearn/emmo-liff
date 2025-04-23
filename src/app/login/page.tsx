@@ -60,12 +60,23 @@ export default function UpdateLatestUserWithLINE() {
         const tempIdFromHash = hashParams.get('temp');
         const savedTempId = localStorage.getItem('pendingTempId');
         const effectiveTempId = savedTempId || tempIdFromHash;
-
+        
+        
         if (!effectiveTempId) {
             // alert('❌ Missing temp ID');
             console.log('❌ Missing temp ID');
             return;
         }
+        const nickname = localStorage.getItem('nickName');
+        console.log(`👤 nickname: `, nickname);
+        await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              tempId: effectiveTempId,
+              name: nickname,
+            }),
+          });
 
         const parsedProfile: LineProfile = {
             userId: rawProfile.userId,
@@ -97,6 +108,7 @@ export default function UpdateLatestUserWithLINE() {
 
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
+        
         console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
         const lineUserId = localStorage.getItem('lineUserId');
         console.log('🧾 Called for LINE ID:', lineUserId);
