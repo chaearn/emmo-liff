@@ -75,8 +75,8 @@ export default function UpdateLatestUserWithLINE() {
             console.log('❌ Missing temp ID');
             return;
         }
-        const nickname = localStorage.getItem('userNickname') || '';
-        setNickname(nickname);
+        // Removed the local nickname variable and setNickname call here
+        
         console.log(`👤 nickname: `, nickname);
         await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
             method: 'POST',
