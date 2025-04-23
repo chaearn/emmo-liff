@@ -150,23 +150,8 @@ export default function UpdateLatestUserWithLINE() {
   console.log('🎉 Profile loaded', profile)
 
   return (
-    <div>
-      <h1>Welcome, {profile.displayName}</h1>
-      <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
-      <p>{profile.userId}</p>
-      <form onSubmit={handleUpdate}>
-        <input
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="Edit display name"
-          required
-        />
-        <button type="submit">Update Latest User</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-      <button onClick={handleLogout}>Logout</button>
+    <div style={{display:'flex', width:'100%', height:'100%'}}>
+      <h1>Loading Profile</h1>      
     </div>
   );
 }
