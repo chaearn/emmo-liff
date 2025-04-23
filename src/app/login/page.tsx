@@ -76,19 +76,7 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
-        const { data: fetchData, error: fetchError } = await supabase
-            .from('emmo_users')
-            .select('name') 
-            .eq('display_name', effectiveTempId as string)
-            
-        if (fetchError) {
-            console.error('❌ Error fetching user data: ', fetchError.message);
-            // alert(`❌ Failed to update user: ${updateError.message}`);
-        } else {
-            console.log('✅ User updated in Supabase');
-            // alert('✅ LINE info updated!');
-            console.log('📥 Fetched user data:', fetchData);
-        }
+        
 
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
@@ -119,20 +107,21 @@ export default function UpdateLatestUserWithLINE() {
       return;
     }
 
-    const { error: updateError } = await supabase
-      .from('emmo_users')
-      .update({
-        line_id: profile.userId,
-        display_name: displayName,
-        avatar: avatar,
-      })
-      .eq('id', latestUserId);
+    const effectiveTempId = localStorage.getItem('pendingTempId');
 
-    if (updateError) {
-      setError(updateError.message);
-    } else {
-      setSuccess('User info updated!');
-    }
+    const { data: fetchData, error: fetchError } = await supabase
+    .from('emmo_users')
+    .select('name') 
+    .eq('display_name', effectiveTempId as string)
+    
+if (fetchError) {
+    console.error('❌ Error fetching user data: ', fetchError.message);
+    // alert(`❌ Failed to update user: ${updateError.message}`);
+} else {
+    console.log('✅ User updated in Supabase');
+    // alert('✅ LINE info updated!');
+    console.log('📥 Fetched user data:', fetchData);
+}
   };
 
   if (!profile) return <p>Loading LINE profile...</p>;
