@@ -41,6 +41,11 @@ export default function UpdateLatestUserWithLINE() {
         if (tempId) {
         localStorage.setItem('pendingTempId', tempId);
         }
+        const latestNickname = localStorage.getItem('userNickname');
+        if (latestNickname) {
+          console.log('✅ Pulled nickname from localStorage:', latestNickname);
+          setNickname(latestNickname);
+        }
         await liff.init({
           liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
           withLoginOnExternalBrowser: true,
@@ -77,7 +82,7 @@ export default function UpdateLatestUserWithLINE() {
         }
         // Removed the local nickname variable and setNickname call here
         
-        console.log(`👤 nickname: `, nickname);
+        console.log(`👤 nickname: `, latestNickname);
         await fetch('https://emmo-node.onrender.com/api/save-name-from-temp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
