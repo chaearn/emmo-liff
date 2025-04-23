@@ -75,7 +75,8 @@ export default function UpdateLatestUserWithLINE() {
         console.log('user nickname:', localStorage.getItem('userNickname'));
         const NICKNAME = localStorage.getItem('userNickname');
         console.log('nickname saved:', NICKNAME);
-        
+        const userID = localStorage.getItem('userID');
+
         const { data: updateData, error: updateError } = await supabase
             .from('emmo_users') // Specify the table
             .update({
@@ -83,7 +84,7 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             }) // Specify the fields to update
-            .eq('display_name', effectiveTempId) // Apply conditions
+            .eq('id', userID) // Apply conditions
             .select('name, line_id, display_name, avatar'); // Optionally select fields to return
 
         if (updateError) {

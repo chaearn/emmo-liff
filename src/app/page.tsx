@@ -29,20 +29,22 @@ const AddUserPage: React.FC = () => {
       setError(`❌ บันทึกล้มเหลว: ${insertError.message}`);
       return;
     } else {
-      const newUserId = insertData[0].id; // Get the ID of the newly created row
-      console.log('📥 New user ID:', newUserId);
-      localStorage.setItem('userID', newUserId);
+      
       const userID = localStorage.getItem('userID');
       console.log('📥 Saved user ID:', userID);
       
     }
-
+    
+    const newUserId = insertData[0].id; // Get the ID of the newly created row
+    console.log('📥 New user ID:', newUserId);
+    localStorage.setItem('userID', newUserId);
     // Store the nickname in local storage
     localStorage.setItem('userNickname', name);
     
     
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
     console.log('user nickname:', localStorage.getItem('userNickname'));
+    
     // setName('');
   };
 
