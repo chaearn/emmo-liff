@@ -30,14 +30,14 @@ const AddUserPage: React.FC = () => {
     }
 
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
-    setNickName(name);
     localStorage.setItem('userNickname', name);
-
+    setNickName(name);
     // setName('');
   };
 
   const handleFindRow = async () => {
-   
+    console.log('➡️ Going to login with tempId:', tempId);
+    console.log('➡️ And nickname:', nickName);
     router.push(`/login?temp=${tempId}&nickname=${nickName}`);
   };
 
