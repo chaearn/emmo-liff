@@ -140,7 +140,10 @@ export default function UpdateLatestUserWithLINE() {
 }
 
 function setError(arg0: string) {
+    const [profile, setProfile] = useState<LineProfile | null>(null);
     console.log(arg0);
+    liff.logout();
+    setProfile(null);
     setTimeout(() => {
         window.location.href = '/login';
       }, 3000); // ⏱️ รอ 3 วินาทีค่อย redirect
