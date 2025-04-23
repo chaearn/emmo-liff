@@ -11,3 +11,7 @@ export type UserProfile = {
     display_name: string;
     avatar: string | undefined;
 };
+
+export type userNICKNAME = {
+    name: string;
+}

@@ -2,13 +2,14 @@
 import { useEffect, useState } from 'react';
 import liff from '@line/liff';
 import { supabase } from '@/lib/supabase';
-import type { LineProfile } from '@/lib/types';
+import type { LineProfile, userNICKNAME } from '@/lib/types';
 
 export default function UpdateLatestUserWithLINE() {
     const [profile, setProfile] = useState<LineProfile | null>(null);
-    const [latestUserId ] = useState<number | null>(null);
-    const [displayName, setDisplayName] = useState('');
+    // const [latestUserId ] = useState<number | null>(null);
+    // const [displayName, setDisplayName] = useState('');
     // const [avatar] = useState('');
+    const [NICKNAME, setNICKNAME] = useState<userNICKNAME | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -76,8 +77,22 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
-        
+        const { data: fetchData, error: fetchError } = await supabase
+            .from('emmo_users')
+            .select('name') 
+            .eq('display_name', effectiveTempId as string)
+            
+        if (fetchError) {
+            console.error('❌ Error fetching user data: ', fetchError.message);
+            // alert(`❌ Failed to update user: ${updateError.message}`);
+        } else {
+            console.log('✅ User updated in Supabase');
+            // alert('✅ LINE info updated!');
+            console.log('📥 Fetched user data:', fetchData);
+            return fetchData; // Return the fetched data
+        }
 
+        setNICKNAME(NICKNAME);
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
         console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
@@ -97,32 +112,31 @@ export default function UpdateLatestUserWithLINE() {
     start();
   }, []);
 
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
+//   const handleUpdate = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setError(null);
+//     setSuccess(null);
 
-    if (!latestUserId || !profile) {
-      setError('Missing user info');
-      return;
-    }
+//     if (!latestUserId || !profile) {
+//       setError('Missing user info');
+//       return;
+//     }
 
-    const effectiveTempId = localStorage.getItem('pendingTempId');
+//     const { error: updateError } = await supabase
+//       .from('emmo_users')
+//       .update({
+//         line_id: profile.userId,
+//         display_name: displayName,
+//         avatar: avatar,
+//       })
+//       .eq('id', latestUserId);
 
-    const { data: fetchData, error: fetchError } = await supabase
-    .from('emmo_users')
-    .select('name') 
-    .eq('display_name', effectiveTempId as string)
-    
-if (fetchError) {
-    console.error('❌ Error fetching user data: ', fetchError.message);
-    // alert(`❌ Failed to update user: ${updateError.message}`);
-} else {
-    console.log('✅ User updated in Supabase');
-    // alert('✅ LINE info updated!');
-    console.log('📥 Fetched user data:', fetchData);
-}
-  };
+//     if (updateError) {
+//       setError(updateError.message);
+//     } else {
+//       setSuccess('User info updated!');
+//     }
+//   };
 
   if (!profile) return <p>Loading LINE profile...</p>;
   console.log('🎉 Profile loaded', profile)
@@ -132,16 +146,7 @@ if (fetchError) {
       <h1>Welcome, {profile.displayName}</h1>
       <img src={profile.pictureUrl} alt="profile" width={120} height={120} />
       <p>{profile.userId}</p>
-      <form onSubmit={handleUpdate}>
-        <input
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="Edit display name"
-          required
-        />
-        <button type="submit">Update Latest User</button>
-      </form>
+      <p>{profile.displayName}</p>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}
       <button onClick={handleLogout}>Logout</button>
