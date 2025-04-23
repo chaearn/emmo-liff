@@ -76,6 +76,7 @@ export default function UpdateLatestUserWithLINE() {
         const NICKNAME = localStorage.getItem('userNickname');
         console.log('nickname saved:', NICKNAME);
         const userID = localStorage.getItem('userID');
+        console.log(userID);
 
         const { data: updateData, error: updateError } = await supabase
             .from('emmo_users') // Specify the table
