@@ -76,23 +76,18 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
-        const { data: updateData, error: updateError } = await supabase
+        const { data: fetchData, error: fetchError } = await supabase
             .from('emmo_users')
-            .update({
-                line_id: parsedProfile.userId,
-                display_name: parsedProfile.displayName,
-                avatar: parsedProfile.pictureUrl,
-            })
+            .select('name') 
             .eq('id', effectiveTempId as string)
-            .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
-
-        if (updateError) {
-            console.error('❌ Failed to update user:', updateError.message);
+            
+        if (fetchError) {
+            console.error('❌ Error fetching user data: ', fetchError.message);
             // alert(`❌ Failed to update user: ${updateError.message}`);
         } else {
             console.log('✅ User updated in Supabase');
             // alert('✅ LINE info updated!');
-            console.log('📥 Updated row data:', updateData);
+            console.log('📥 Fetched user data:', fetchData);
         }
 
         setProfile(parsedProfile);
