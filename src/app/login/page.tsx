@@ -55,8 +55,9 @@ export default function UpdateLatestUserWithLINE() {
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const tempIdFromHash = hashParams.get('temp');
         const savedTempId = localStorage.getItem('pendingTempId');
-        const effectiveTempId = savedTempId || tempIdFromHash;
-
+        // const effectiveTempId = savedTempId || tempIdFromHash;
+        const effectiveTempId: string = savedTempId || tempIdFromHash || '';
+        
         if (!effectiveTempId) {
             alert('❌ Missing temp ID');
             return;
@@ -71,6 +72,10 @@ export default function UpdateLatestUserWithLINE() {
         console.log('🧩 Trying to update user with ID:', effectiveTempId);
         console.log('📦 Payload to update:', parsedProfile);
 
+        console.log('user nickname:', localStorage.getItem('userNickname'));
+        const NICKNAME = localStorage.getItem('userNickname');
+        console.log('nickname saved:', NICKNAME);
+        
         const { data: updateData, error: updateError } = await supabase
             .from('emmo_users')
             .update({
@@ -78,7 +83,9 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('display_name', effectiveTempId as string)
+            .or(`display_name.eq.${effectiveTempId},name.eq.${NICKNAME}`) 
+// Combine conditions
+            // .eq('display_name', effectiveTempId as string)
             .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
 
         if (updateError) {
