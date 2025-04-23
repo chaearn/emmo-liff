@@ -84,7 +84,7 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             }) // Specify the fields to update
-            .eq('id', userID) // Apply conditions
+            .eq('display_name', effectiveTempId) // Apply conditions
             .select('name, line_id, display_name, avatar'); // Optionally select fields to return
 
         if (updateError) {
