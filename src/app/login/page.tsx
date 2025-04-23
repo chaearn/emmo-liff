@@ -10,8 +10,8 @@ export default function UpdateLatestUserWithLINE() {
     // const [displayName, setDisplayName] = useState('');
     // const [avatar] = useState('');
     const [NICKNAME, setNICKNAME] = useState<userNICKNAME | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    const [error] = useState<string | null>(null);
+    const [success] = useState<string | null>(null);
 
     const handleLogout = () => {
         liff.logout();
