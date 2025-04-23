@@ -32,8 +32,8 @@ const AddUserPage: React.FC = () => {
       const userID = localStorage.getItem('userID');
       console.log('📥 Saved user ID:', userID);
     }
-
-    const newUserId: string = insertData[0].id; // Get the ID of the newly created row
+    console.log(insertData[0].id);
+    const newUserId = insertData[0].id; // Get the ID of the newly created row
     console.log('📥 New user ID:', newUserId);
     localStorage.setItem('userID', newUserId);
     // Store the nickname in local storage
