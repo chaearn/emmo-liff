@@ -104,6 +104,9 @@ export default function UpdateLatestUserWithLINE() {
         const lineUserId = localStorage.getItem('lineUserId');
         console.log('🧾 Called for LINE ID:', lineUserId);
         
+        // ✅ Redirect ไปยังหน้า /profile หลังจากทุกอย่างเสร็จ
+        window.location.replace('/profile');
+        
         // ...rest of the logic...
       } catch (err) {
         if (err instanceof Error) {
