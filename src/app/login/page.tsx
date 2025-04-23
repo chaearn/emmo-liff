@@ -100,17 +100,20 @@ export default function UpdateLatestUserWithLINE() {
             console.log('✅ User updated in Supabase');
             alert('✅ LINE info updated!');
             console.log('📥 Updated row data:', updateData);
+
+            setProfile(parsedProfile);
+            localStorage.setItem('lineProfile', JSON.stringify(parsedProfile));
+            localStorage.setItem('lineUserId', parsedProfile.userId);
+            console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
+            const lineUserId = localStorage.getItem('lineUserId');
+            console.log('🧾 Called for LINE ID:', lineUserId);
+            
+            // ✅ Redirect ไปยังหน้า /profile หลังจากทุกอย่างเสร็จ
+            window.location.replace('/profile');
+            
         }
 
-        setProfile(parsedProfile);
-        localStorage.setItem('lineProfile', JSON.stringify(parsedProfile));
-        localStorage.setItem('lineUserId', parsedProfile.userId);
-        console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
-        const lineUserId = localStorage.getItem('lineUserId');
-        console.log('🧾 Called for LINE ID:', lineUserId);
         
-        // ✅ Redirect ไปยังหน้า /profile หลังจากทุกอย่างเสร็จ
-        window.location.replace('/profile');
         
         // ...rest of the logic...
       } catch (err) {
