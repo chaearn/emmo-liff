@@ -12,7 +12,11 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleLogout = () => {
+  
+  const handleLogout = async () => {
+    await liff.init({
+        liffId: process.env.NEXT_PUBLIC_LIFF_ID!,
+      });
     liff.logout();
     setProfile(null);
     localStorage.clear();
