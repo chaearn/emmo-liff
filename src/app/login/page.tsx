@@ -93,6 +93,8 @@ export default function UpdateLatestUserWithLINE() {
             alert(`❌ Failed to update user: ${updateError.message}`);
             if (updateError.message.includes('duplicate key value violates unique constraint "users_line_id_key"')) {
                 setError('บัญชี LINE นี้เชื่อมกับ Emmo ไปแล้ว');
+                liff.logout();
+                setProfile(null);
                 // แสดงข้อความก่อน redirect
             }
                 
@@ -140,10 +142,8 @@ export default function UpdateLatestUserWithLINE() {
 }
 
 function setError(arg0: string) {
-    const [profile, setProfile] = useState<LineProfile | null>(null);
     console.log(arg0);
-    liff.logout();
-    setProfile(null);
+    
     setTimeout(() => {
         window.location.href = '/login';
       }, 3000); // ⏱️ รอ 3 วินาทีค่อย redirect
