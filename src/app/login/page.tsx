@@ -78,7 +78,7 @@ export default function UpdateLatestUserWithLINE() {
                 display_name: parsedProfile.displayName,
                 avatar: parsedProfile.pictureUrl,
             })
-            .eq('id', effectiveTempId as string)
+            .eq('display_name', effectiveTempId as string)
             .select('id, line_id, display_name, avatar'); // ⬅️ Explicitly select fields for Supabase return
 
         if (updateError) {
