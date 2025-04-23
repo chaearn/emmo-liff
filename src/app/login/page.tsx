@@ -19,8 +19,6 @@ export default function UpdateLatestUserWithLINE() {
         window.location.replace('/');
     };
 
-    
-
   useEffect(() => {
     const start = async () => {
       try {
@@ -93,7 +91,7 @@ export default function UpdateLatestUserWithLINE() {
         }
 
         setNICKNAME(NICKNAME);
-        
+
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
         console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
