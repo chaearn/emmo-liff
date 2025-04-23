@@ -79,7 +79,7 @@ export default function UpdateLatestUserWithLINE() {
         const { data: fetchData, error: fetchError } = await supabase
             .from('emmo_users')
             .select('name') 
-            .eq('id', effectiveTempId as string)
+            .eq('display_name', effectiveTempId as string)
             
         if (fetchError) {
             console.error('❌ Error fetching user data: ', fetchError.message);
