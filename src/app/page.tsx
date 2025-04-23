@@ -30,9 +30,8 @@ const AddUserPage: React.FC = () => {
     }
 
     setSuccess('✅ บันทึกชื่อเรียบร้อยแล้ว 🎉');
+    setNickName(name);
     localStorage.setItem('userNickname', name);
-    const newNickname = localStorage.getItem('userNickname');
-    setNickName(newNickname);
 
     // setName('');
   };
