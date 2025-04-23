@@ -77,20 +77,15 @@ export default function UpdateLatestUserWithLINE() {
 
         const { data: fetchData, error: fetchError } = await supabase
             .from('emmo_users')
-            .select('name') 
-            .eq('display_name', effectiveTempId as string)
-            
+            .select('name')
+            .eq('display_name', effectiveTempId as string);
+
         if (fetchError) {
             console.error('❌ Error fetching user data: ', fetchError.message);
-            // alert(`❌ Failed to update user: ${updateError.message}`);
-        } else {
-            console.log('✅ User updated in Supabase');
-            // alert('✅ LINE info updated!');
+        } else if (fetchData && fetchData.length > 0) {
             console.log('📥 Fetched user data:', fetchData);
-            return fetchData; // Return the fetched data
+            setNICKNAME(fetchData[0].name);
         }
-
-        setNICKNAME(NICKNAME);
 
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
