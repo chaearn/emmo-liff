@@ -87,6 +87,8 @@ export default function UpdateLatestUserWithLINE() {
             setNICKNAME(fetchData[0].name);
         }
 
+        console.log(NICKNAME);
+
         setProfile(parsedProfile);
         localStorage.setItem('lineUserId', parsedProfile.userId);
         console.log('🧾 Saved lineUserId to localStorage:', parsedProfile.userId);
