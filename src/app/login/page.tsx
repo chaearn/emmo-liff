@@ -94,9 +94,7 @@ export default function UpdateLatestUserWithLINE() {
             if (updateError.message.includes('duplicate key value violates unique constraint "users_line_id_key"')) {
                 setError('บัญชี LINE นี้เชื่อมกับ Emmo ไปแล้ว');
                 // แสดงข้อความก่อน redirect
-                setTimeout(() => {
-                  window.location.href = '/login';
-                }, 3000);} // ⏱️ รอ 3 วินาทีค่อย redirect
+            }
                 
         } else {
             console.log('✅ User updated in Supabase');
@@ -140,6 +138,8 @@ export default function UpdateLatestUserWithLINE() {
 
 function setError(arg0: string) {
     console.log(arg0);
-    window.location.href = '/login';
-    throw new Error('Function not implemented.');
+    setTimeout(() => {
+        window.location.href = '/login';
+      }, 3000); // ⏱️ รอ 3 วินาทีค่อย redirect
+    // throw new Error('Function not implemented.');
 }
