@@ -12,11 +12,11 @@ export default function UpdateLatestUserWithLINE() {
     // const [error, setError] = useState<string | null>(null);
     // const [success, setSuccess] = useState<string | null>(null);
 
-    const handleLogout = () => {
-        liff.logout();
-        setProfile(null);
-        window.location.replace('/');
-    };
+    // const handleLogout = () => {
+    //     liff.logout();
+    //     setProfile(null);
+    //     window.location.replace('/');
+    // };
 
     
 
