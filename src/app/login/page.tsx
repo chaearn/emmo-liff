@@ -95,7 +95,7 @@ export default function UpdateLatestUserWithLINE() {
                 setError('บัญชี LINE นี้เชื่อมกับ Emmo ไปแล้ว');
                 // แสดงข้อความก่อน redirect
                 setTimeout(() => {
-                  window.location.href = '/profile';
+                  window.location.href = '/login';
                 }, 3000);} // ⏱️ รอ 3 วินาทีค่อย redirect
                 
         } else {
