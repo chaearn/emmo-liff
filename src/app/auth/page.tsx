@@ -40,38 +40,41 @@ export default function AuthPage() {
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
-      });
-      
-      if (error) {
+    });
+    
+    if (error) {
         setError(error.message);
-      } else {
+    } else {
         setSuccess('Sign-up successful! Please check your email for confirmation.');
         const user = data?.user;
-      
-        if (user) {     
-            await supabase
-            .from('users')
-            .upsert({ id: user.id, prefer_name: nickname });
-            
-            await supabase
-                    .from('emmo_profiles')
-                    .update([{ user_id: user.id }]) // Assuming user_id is the foreign key
-                    .eq('name', nickname)
-                    .single();
-                    
+    
+        if (user) {
+            // Upsert user information into the users table
+            const { error: upsertError } = await supabase
+                .from('users')
+                .upsert({ id: user.id, prefer_name: nickname });
+    
+            if (upsertError) {
+                setError(upsertError.message);
+                return; // Exit if there's an error
+            }
+    
+            // Update the emmo_profiles table
+            const { error: updateError } = await supabase
+                .from('emmo_profiles')
+                .update({ user_id: user.id }) // Update the user_id
+                .eq('name', nickname) // Assuming you want to match the name
+                .single();
+    
+            if (updateError) {
+                setError(updateError.message);
+                return; // Exit if there's an error
+            }
+    
+            // Redirect to the dashboard
             router.push('/dashboard');
-            // if (insertError) { 
-            //     setError(insertError.message); } 
-            // else { setSuccess( 'Sign-up successful! Additional information saved.'); }
         }
-        // if (user) {
-        //   await supabase
-        //     .from('users')
-        //     .upsert({ id: user.id, prefer_name: nickname });
-        // }
-      
-        // router.push('/dashboard');
-      }
+    }
 };
 
   const handleGuest = async () => {
