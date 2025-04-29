@@ -52,10 +52,11 @@ export default function AuthPage() {
             await supabase
             .from('users')
             .upsert({ id: user.id, prefer_name: nickname });
-            const { error: insertError } = await supabase
+            
+            await supabase
                     .from('emmo_profiles')
-                    .insert([{ user_id: user.id } // Assuming user_id is the foreign key
-            ]);
+                    .insert([{ user_id: user.id }]); // Assuming user_id is the foreign key
+            
             router.push('/dashboard');
             // if (insertError) { 
             //     setError(insertError.message); } 
