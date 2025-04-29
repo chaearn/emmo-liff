@@ -32,7 +32,7 @@ export default function AuthPage() {
 //     router.push('/dashboard');
 //   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
+const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -49,25 +49,13 @@ export default function AuthPage() {
         const user = data?.user;
     
         if (user) {
-            // Upsert user information into the users table
-            const { error: upsertError } = await supabase
-                .from('users')
-                .upsert({ id: user.id, prefer_name: nickname });
+            // Instead of upserting into auth.users, store additional info in your custom table
+            const { error: insertError } = await supabase
+                .from('emmo_profiles') // Use your custom table
+                .upsert({ user_id: user.id, prefer_name: nickname }); // Assuming user_id is the foreign key
     
-            if (upsertError) {
-                setError(upsertError.message);
-                return; // Exit if there's an error
-            }
-    
-            // Update the emmo_profiles table
-            const { error: updateError } = await supabase
-                .from('emmo_profiles')
-                .update({ user_id: user.id }) // Update the user_id
-                .eq('name', nickname) // Assuming you want to match the name
-                .single();
-    
-            if (updateError) {
-                setError(updateError.message);
+            if (insertError) {
+                setError(insertError.message);
                 return; // Exit if there's an error
             }
     
@@ -76,7 +64,6 @@ export default function AuthPage() {
         }
     }
 };
-
   const handleGuest = async () => {
     const { data, error } = await supabase.auth.signInAnonymously();
     if (error) return alert(error.message);
