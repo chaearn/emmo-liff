@@ -1,7 +1,8 @@
 // src/app/auth/page.tsx
 'use client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
+import { useState } from 'react';
 // import { supabase } from '@/lib/supabase';
 import { supabase } from 'supabaseClient';
 
