@@ -52,7 +52,7 @@ const handleSignUp = async (e: React.FormEvent) => {
             // Instead of upserting into auth.users, store additional info in your custom table
             const { error: insertError } = await supabase
                 .from('emmo_profiles') // Use your custom table
-                .upsert({ user_id: user.id, name: localStorage.getItem('emmo_nickname') }); // Assuming user_id is the foreign key
+                .upsert({ user_id: user.id }); // Assuming user_id is the foreign key
     
             if (insertError) {
                 setError(insertError.message);
