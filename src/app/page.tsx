@@ -31,6 +31,7 @@ const AddUserPage: React.FC = () => {
     } else {
       const userID = localStorage.getItem('userID');
       console.log('📥 Saved user ID:', userID);
+      console.log('📥 temp ID:', tempId);
     }
 
     const newUserId: string = insertData[0].id; // Get the ID of the newly created row
