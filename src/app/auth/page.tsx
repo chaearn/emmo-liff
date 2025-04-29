@@ -71,7 +71,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div>
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 font-[family-name:var(--font-geist-sans)]" style={{minHeight:'100svh'}}>
         <h1>Sign Up</h1>
         <form onSubmit={handleSignUp}>
             <div>

@@ -18,7 +18,7 @@ const AddUserPage: React.FC = () => {
     setTempId(newTempId);
 
     const { data: insertData, error: insertError } = await supabase
-      .from('emmo_users')
+      .from('emmo_profiles')
       .insert([
         { name, display_name: newTempId || 'default_display_name' }, // Provide a default if newTempId is null
       ])
