@@ -45,8 +45,8 @@ const AddUserPage: React.FC = () => {
   };
 
   const handleFindRow = async () => {
-   
-    router.push(`/login?temp=${tempId}`);
+    router.push(`/auth`);
+    // router.push(`/login?temp=${tempId}`);
   };
 
 
