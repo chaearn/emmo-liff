@@ -1,15 +1,19 @@
 // src/app/auth/page.tsx
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
   const router = useRouter();
 
-  const nickname = localStorage.getItem('emmo_nickname') ?? '';
+  useEffect(() => {
+    const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
+    setNickname(storedNickname);
+  }, []);
 
   const handleSignup = async () => {
     const { data, error } = await supabase.auth.signUp({ email, password });
