@@ -56,10 +56,10 @@ export default function AuthPage() {
                     .from('emmo_profiles')
                     .insert([{ user_id: user.id } // Assuming user_id is the foreign key
             ]);
-                   
-            if (insertError) { 
-                setError(insertError.message); } 
-            else { setSuccess( 'Sign-up successful! Additional information saved.'); }
+            router.push('/dashboard');
+            // if (insertError) { 
+            //     setError(insertError.message); } 
+            // else { setSuccess( 'Sign-up successful! Additional information saved.'); }
         }
         // if (user) {
         //   await supabase
@@ -67,7 +67,7 @@ export default function AuthPage() {
         //     .upsert({ id: user.id, prefer_name: nickname });
         // }
       
-        router.push('/dashboard');
+        // router.push('/dashboard');
       }
 };
 
