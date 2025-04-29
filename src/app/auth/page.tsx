@@ -49,11 +49,20 @@ const handleSignUp = async (e: React.FormEvent) => {
         const user = data?.user;
     
         if (user) {
+            
             // Instead of upserting into auth.users, store additional info in your custom table
             const { error: insertError } = await supabase
-                .from('emmo_profiles') // Use your custom table
-                .upsert({ user_id: user.id }); // Assuming user_id is the foreign key
-    
+                // .from('emmo_profiles') // Use your custom table
+                // .upsert({ user_id: user.id }); // Assuming user_id is the foreign key
+
+                .from('emmo_profiles') // Specify the table
+                .update({
+                    user_id: user.id,
+                }) // Specify the fields to update
+                .eq('name', nickname) // Apply conditions
+                .select('user_id'); // Optionally select fields to return
+                
+                
             if (insertError) {
                 setError(insertError.message);
                 return; // Exit if there's an error
