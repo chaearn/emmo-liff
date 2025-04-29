@@ -15,10 +15,7 @@ export default function AuthPage() {
     const [success, setSuccess] = useState<string | null>(null);
 
 
-    useEffect(() => {
-        const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
-        setNickname(storedNickname);
-    }, []);
+   
 
 //   const handleSignup = async () => {
 //     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -49,7 +46,10 @@ const handleSignUp = async (e: React.FormEvent) => {
         const user = data?.user;
     
         if (user) {
-            
+            useEffect(() => {
+                const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
+                setNickname(storedNickname);
+            }, []);
             // Instead of upserting into auth.users, store additional info in your custom table
             const { data: updateData, error: updateError } = await supabase
                         .from('emmo_profiles') // Specify the table
