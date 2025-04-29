@@ -56,7 +56,8 @@ export default function AuthPage() {
             await supabase
                     .from('emmo_profiles')
                     .update([{ user_id: user.id }]) // Assuming user_id is the foreign key
-                    .eq('name', nickname);
+                    .eq('name', nickname)
+                    .single();
                     
             router.push('/dashboard');
             // if (insertError) { 
