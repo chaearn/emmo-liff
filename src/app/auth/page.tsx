@@ -1,10 +1,10 @@
 // src/app/auth/page.tsx
 'use client';
 import { useRouter } from 'next/navigation';
-// import { useEffect, useState } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { supabase } from '@/lib/supabase';
 import { supabase } from 'supabaseClient';
+
 
 export default function AuthPage() {
     const [email, setEmail] = useState('');
@@ -15,10 +15,10 @@ export default function AuthPage() {
     const [success, setSuccess] = useState<string | null>(null);
 
 
-    // useEffect(() => {
-    //     const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
-    //     setNickname(storedNickname);
-    // }, []);
+    useEffect(() => {
+        const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
+        setNickname(storedNickname);
+    }, []);
 
 //   const handleSignup = async () => {
 //     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -37,9 +37,6 @@ const handleSignUp = async (e: React.FormEvent) => {
     setError(null);
     setSuccess(null);
 
-    const storedNickname = localStorage.getItem('emmo_nickname') ?? '';
-        setNickname(storedNickname);
-
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -54,22 +51,14 @@ const handleSignUp = async (e: React.FormEvent) => {
         if (user) {
             
             // Instead of upserting into auth.users, store additional info in your custom table
-            const { data: updateData, error: updateError } = await supabase
-                        .from('emmo_profiles') // Specify the table
-                        .update({
-                            user_id: user.id,
-                        }) // Specify the fields to update
-                        .eq('name', nickname) // Apply conditions
-                        .select('user_id'); // Optionally select fields to return
-            
-                    if (updateError) {
-                        console.error('❌ Failed to update user:', updateError.message);
-                      
-                            
-                    } else {
-                        
-                        console.log('📥 Updated row data:', updateData);
-                    }
+            const { error: insertError } = await supabase
+                .from('emmo_profiles') // Use your custom table
+                .upsert({ user_id: user.id }); // Assuming user_id is the foreign key
+                
+            if (insertError) {
+                setError(insertError.message);
+                return; // Exit if there's an error
+            }
     
             // Redirect to the dashboard
             router.push('/dashboard');
