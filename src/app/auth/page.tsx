@@ -48,11 +48,24 @@ export default function AuthPage() {
         setSuccess('Sign-up successful! Please check your email for confirmation.');
         const user = data?.user;
       
-        if (user) {
-          await supabase
+        if (user) {     
+            await supabase
             .from('users')
             .upsert({ id: user.id, prefer_name: nickname });
+            const { error: insertError } = await supabase
+                    .from('emmo_profiles')
+                    .insert([{ user_id: user.id } // Assuming user_id is the foreign key
+            ]);
+                   
+            if (insertError) { 
+                setError(insertError.message); } 
+            else { setSuccess( 'Sign-up successful! Additional information saved.'); }
         }
+        // if (user) {
+        //   await supabase
+        //     .from('users')
+        //     .upsert({ id: user.id, prefer_name: nickname });
+        // }
       
         router.push('/dashboard');
       }
