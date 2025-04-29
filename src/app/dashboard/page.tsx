@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import liff from '@line/liff';
+import type { User } from '@supabase/supabase-js'; // ด้านบน
+
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -23,11 +25,19 @@ export default function Dashboard() {
 
     const profile = await liff.getProfile();
 
-    const { error } = await supabase.from('users').update({
-      line_id: profile.userId,
-      avatar: profile.pictureUrl,
-      display_name: profile.displayName,
-    }).eq('id', user.id);
+    if (!user) {
+        alert('ยังไม่ได้ login Supabase');
+        return;
+      }
+      
+      const { error } = await supabase
+        .from('users')
+        .update({
+          line_id: profile.userId,
+          avatar: profile.pictureUrl,
+          display_name: profile.displayName,
+        })
+        .eq('id', user.id);
 
     if (error) return alert(error.message);
     alert('เชื่อม LINE สำเร็จ!');
