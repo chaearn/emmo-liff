@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 // import { supabase } from '@/lib/supabase';
-import { supabase } from '@utils/supabase/client';
+import { supabase } from 'supabaseClient';
 
 
 export default function AuthPage() {
